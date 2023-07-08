@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import GoogleLogo from './google.svg';
 import { Button, Box, Typography } from '@mui/material';
 
 function App() {
@@ -59,7 +60,25 @@ function App() {
       justifyContent="center"
       height="100vh"
     >
-      <Button onClick={getGoogleAuthLink} variant='contained'>Continue with Google</Button>
+      <Button onClick={getGoogleAuthLink} variant='contained'
+      startIcon={<img src={GoogleLogo} 
+      alt="Google logo"/>}
+      sx={{
+        color: '#0d0d0d',
+        borderColor: '#E8E8E8',
+        backgroundColor: 'white',
+        '&:hover': {
+          backgroundColor: '#F8F9FA',
+        },
+        '& img': {
+          width: '32px',
+          height: '32px',
+        },
+        borderRadius: '20px',
+      }}
+      >
+      Continue with Google
+      </Button>
       {user && (
       <Typography variant='overline'>You logged as {user}</Typography>
       )}
