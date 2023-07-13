@@ -1,88 +1,29 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import GoogleLogo from './google.svg';
-import { Button, Box, Typography } from '@mui/material';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import AppBarMenu from './components/AppBarMenu';
+import Login from './pages/LoginPage';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './utils/PrivateRoute';
+
 
 function App() {
-  const [user, setUser] = useState();
 
+  const location = useLocation();
 
-  let getGoogleAuthLink = async () => {
-    try {
-      let res = await axios.get(`http://localhost:8000/api/auth/social/o/google-oauth2/?redirect_uri=${document.URL}`, { withCredentials: true });
-      let link = await res.data.authorization_url;
-      console.log(res.headers);
-      localStorage.setItem("afterOAuthLogin", true);
-      window.location.assign(link);
-    } catch (err) {
-      console.log("Unable to login with login");
-    }
-
-  }
-
-  let googleAuth = async () => {
-    try {
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      let headers = new Headers();
-      headers.append('Content-Type', 'application/x-www-form-urlencoded');
-      let res = await axios.post(`http://localhost:8000/api/auth/social/o/google-oauth2/`, urlParams, { headers: headers, withCredentials: true });
-      let data = await res.data;
-      setUser(res.data.user)
-      console.log(data);
-      localStorage.removeItem("afterOAuthLogin");
-      
-      // window.location.assign("http://localhost:3000");
-    } catch (err) {
-      console.log("Something went wrong");
-    }
-    
-  }
-
-  useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    let code = urlParams.get("code");
-    let auth_state = urlParams.get("state");
-    let afterOAuthLogin = localStorage.getItem("afterOAuthLogin");
-    console.log(afterOAuthLogin)
-    if (code && auth_state && afterOAuthLogin) {
-      googleAuth();
-    }
-  }, [])
-
-  
+  const authRoutes = ['/signin', '/signup', '/reset-password', '/confirm-email'];
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-    >
-      <Button onClick={getGoogleAuthLink} variant='contained'
-      startIcon={<img src={GoogleLogo} 
-      alt="Google logo"/>}
-      sx={{
-        color: '#0d0d0d',
-        borderColor: '#E8E8E8',
-        backgroundColor: 'white',
-        '&:hover': {
-          backgroundColor: '#F8F9FA',
-        },
-        '& img': {
-          width: '32px',
-          height: '32px',
-        },
-        borderRadius: '20px',
-      }}
-      >
-      Continue with Google
-      </Button>
-      {user && (
-      <Typography variant='overline'>You logged as {user}</Typography>
-      )}
-    </Box>
+    <>
+      {!authRoutes.includes(location.pathname) && <AppBarMenu />}
+      <AuthProvider>
+        <Routes>
+          <Route path='/signin' element={<Login />} />
+          <Route path='/private' element={
+            <PrivateRoute>
+              <h1>Hi from Ohio!</h1>
+            </PrivateRoute>} />
+        </Routes>
+      </AuthProvider>
+    </>
   );
 }
 
