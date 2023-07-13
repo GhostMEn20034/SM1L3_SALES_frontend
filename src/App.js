@@ -3,6 +3,7 @@ import AppBarMenu from './components/AppBarMenu';
 import Login from './pages/LoginPage';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './utils/PrivateRoute';
+import YourAccountPage from './pages/YourAccountPage';
 
 
 function App() {
@@ -13,14 +14,22 @@ function App() {
 
   return (
     <>
-      {!authRoutes.includes(location.pathname) && <AppBarMenu />}
+      
       <AuthProvider>
+      {!authRoutes.includes(location.pathname) && <AppBarMenu />}
         <Routes>
           <Route path='/signin' element={<Login />} />
           <Route path='/private' element={
             <PrivateRoute>
               <h1>Hi from Ohio!</h1>
-            </PrivateRoute>} />
+            </PrivateRoute>} 
+          />
+          <Route path='/your-account' element={
+            
+              <YourAccountPage />
+            
+          } />
+
         </Routes>
       </AuthProvider>
     </>

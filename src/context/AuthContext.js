@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useState, useEffect } from "react";
 import jwt_decode from 'jwt-decode';
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext()
@@ -51,13 +52,20 @@ export const AuthProvider = ({ children }) => {
 
     let logoutUser = () => {
         try {
-            let response = axios.post(
-                `${baseURL}/api/auth/token/blacklist/`, 
-                {refresh: authTokens.refresh},
-                {headers: {
-                    "Content-Type": "application/json"
-                }}
-                )    
+
+            let token = jwt_decode(authTokens?.access);
+
+            let isExpired = dayjs.unix(token.exp).diff(dayjs()) < 1;
+
+            if (!isExpired) {
+                axios.post(
+                    `${baseURL}/api/auth/token/blacklist/`, 
+                    {refresh: authTokens.refresh},
+                    {headers: {
+                        "Content-Type": "application/json"
+                    }}
+                    )
+            }  
             setAuthTokens(null);
             setUser(null);
             localStorage.removeItem('authTokens');

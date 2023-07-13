@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,14 +18,20 @@ import { Search, SearchIconWrapper, StyledInputBase } from './SearchBar';
 import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Link from '@mui/material/Link';
+import AuthContext from '../context/AuthContext';
 
 
 const pages = ['Catalogue', 'Orders'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard'];
+const app_bar_links = ['/private', '/orders'];
+const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 
 function AppBarMenu() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  let { user, logoutUser } = useContext(AuthContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -64,13 +70,15 @@ function AppBarMenu() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <AppBar position="fixed" color='primary' sx={{marginBottom: 100}}>
+        <AppBar position="fixed" color='primary' sx={{ marginBottom: 100 }}>
           <Container maxWidth="xl">
             <Toolbar disableGutters variant='dense' style={{ height: 70 }}>
-              <SvgIcon component={SmileSalesLogo} inheritViewBox 
-              sx={{ width: "120px", height: "70px", ":hover": {"cursor": "pointer"} }} 
-              onClick={() => console.log("Hello")}
-              />
+              <Link href="/" underline="none">
+                <SvgIcon component={SmileSalesLogo} inheritViewBox
+                  sx={{ width: "120px", height: "70px", ":hover": { "cursor": "pointer" } }}
+                  onClick={() => console.log("Hello")}
+                />
+              </Link>
               <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
                   size="large"
@@ -119,9 +127,10 @@ function AppBarMenu() {
                 </Search>
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => (
+                {pages.map((page, index) => (
                   <Button
                     key={page}
+                    href={app_bar_links[index]}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: '#D5D507', display: 'block', marginRight: 2 }}
                   >
@@ -130,7 +139,7 @@ function AppBarMenu() {
                 ))}
                 <Button
                   startIcon={
-                    <StyledBadge badgeContent={4} color="secondary" sx={{marginRight: 1}}>
+                    <StyledBadge badgeContent={4} color="secondary" sx={{ marginRight: 1 }}>
                       <ShoppingCartIcon />
                     </StyledBadge>}
                   key={"Cart"}
@@ -142,11 +151,11 @@ function AppBarMenu() {
               </Box>
 
               <Box sx={{ flexGrow: 0 }}>
-                {1 === 1 ? (
+                {user ? (
                   <>
                     <Tooltip title="Open settings">
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />
+                        <Avatar alt={user.full_name} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />
                       </IconButton>
                     </Tooltip>
                     <Menu
@@ -165,15 +174,21 @@ function AppBarMenu() {
                       open={Boolean(anchorElUser)}
                       onClose={handleCloseUserMenu}
                     >
-                      {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                          <Typography textAlign="center" color="#D5D507">{setting}</Typography>
-                        </MenuItem>
+                      {settings.map((setting, index) => (
+                        <Link href={setting_links[index]} underline="none">
+                          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                            <Typography textAlign="center" color="#D5D507">{setting}</Typography>
+                          </MenuItem>
+                        </Link>
                       ))}
+                        <MenuItem key="logout" onClick={logoutUser}>
+                          <Typography textAlign="center" color="#D5D507">Logout</Typography>
+                        </MenuItem>
                     </Menu>
                   </>
                 ) : (
                   <Button
+                    href='/signin'
                     key={"Login"}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, backgroundColor: '#D5D507', ":hover": { backgroundColor: "#b8b804" }, display: 'block', marginRight: 2 }}
@@ -186,7 +201,7 @@ function AppBarMenu() {
           </Container>
         </AppBar>
       </ThemeProvider>
-      <Box className="Offset" sx={{height: "70px"}}></Box>
+      <Box className="Offset" sx={{ height: "70px" }}></Box>
     </>
   );
 }
