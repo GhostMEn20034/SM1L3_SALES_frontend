@@ -20,16 +20,20 @@ import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Link from '@mui/material/Link';
 import AuthContext from '../context/AuthContext';
+import useUserInfo from '../utils/useUserInfo';
 
 
 const pages = ['Catalogue', 'Orders'];
-const settings = ['Profile', 'Account', 'Dashboard'];
-const app_bar_links = ['/private', '/orders'];
+const settings = ['Account', 'Orders', 'Dashboard'];
+const app_bar_links = ['/private', 'your-account/orders'];
 const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 
 function AppBarMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const {userInfo} = useUserInfo();
+
+  console.log(userInfo);
 
   let { user, logoutUser } = useContext(AuthContext);
 
@@ -143,6 +147,7 @@ function AppBarMenu() {
                       <ShoppingCartIcon />
                     </StyledBadge>}
                   key={"Cart"}
+                  href='/cart'
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: '#D5D507', marginRight: 2, width: "100px" }}
                 >
@@ -155,7 +160,7 @@ function AppBarMenu() {
                   <>
                     <Tooltip title="Open settings">
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={user.full_name} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />
+                        { userInfo && (<Avatar alt={`${userInfo.first_name} ${userInfo.last_name}`} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />) }
                       </IconButton>
                     </Tooltip>
                     <Menu
@@ -175,7 +180,7 @@ function AppBarMenu() {
                       onClose={handleCloseUserMenu}
                     >
                       {settings.map((setting, index) => (
-                        <Link href={setting_links[index]} underline="none">
+                        <Link href={setting_links[index]} underline="none" key={setting}>
                           <MenuItem key={setting} onClick={handleCloseUserMenu}>
                             <Typography textAlign="center" color="#D5D507">{setting}</Typography>
                           </MenuItem>

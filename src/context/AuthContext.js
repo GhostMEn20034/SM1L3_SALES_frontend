@@ -91,11 +91,23 @@ export const AuthProvider = ({ children }) => {
 
         if(authTokens){
             setUser(jwt_decode(authTokens.access));
+
+            let token = jwt_decode(authTokens?.refresh);
+
+            let isExpired = dayjs.unix(token.exp).diff(dayjs()) < 1;
+
+            if (isExpired) {
+                setAuthTokens(null);
+                setUser(null);
+                localStorage.removeItem('authTokens');
+            }
         }
         setLoading(false);
 
 
     }, [authTokens, loading])
+
+
 
     return (
         <AuthContext.Provider value={contextData}>
