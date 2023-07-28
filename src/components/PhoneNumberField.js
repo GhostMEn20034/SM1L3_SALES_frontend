@@ -4,7 +4,6 @@ import { MuiTelInput } from 'mui-tel-input';
 export default function PhoneField(props) {
     const {value, onChange} = props;
 
-
   return <MuiTelInput value={value} onChange={(newValue) => onChange(newValue)} 
-  forceCallingCode defaultCountry='ua' disableFormatting />
+  forceCallingCode defaultCountry='UA' disableFormatting />
 }

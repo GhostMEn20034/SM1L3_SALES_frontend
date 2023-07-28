@@ -25,15 +25,13 @@ import useUserInfo from '../utils/useUserInfo';
 
 const pages = ['Catalogue', 'Orders'];
 const settings = ['Account', 'Orders', 'Dashboard'];
-const app_bar_links = ['/private', 'your-account/orders'];
+const app_bar_links = ['/private', '/your-account/orders'];
 const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 
 function AppBarMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const {userInfo} = useUserInfo();
-
-  console.log(userInfo);
 
   let { user, logoutUser } = useContext(AuthContext);
 

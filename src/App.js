@@ -8,13 +8,15 @@ import YourAccountPage from './pages/YourAccountPage';
 import PersonalInfoPage from './pages/PersonalInfoPage';
 import ChangePersonalInfoPage from './pages/ChangePersonalInfoPage';
 import ConfirmNewEmail from './components/Confirmation/ConfirmNewEmail';
+import ConfirmSignup from './components/Confirmation/SignupConfirmation';
+import SignUpPage from './pages/SignupPage';
 
 
 function App() {
 
   const location = useLocation();
 
-  const authRoutes = ['/signin', '/signup', '/reset-password', '/confirm-email', '/change-email/verify'];
+  const authRoutes = ['/signin', '/signup', '/confirm-signup', '/reset-password', '/confirm-email', '/change-email/verify'];
 
   return (
     <>
@@ -49,8 +51,12 @@ function App() {
                 <ConfirmNewEmail />
               </PrivateRoute>
             } />
-
-
+            <Route path='/signup' element={
+              <SignUpPage />
+            } />
+            <Route path='/confirm-signup' element={
+              <ConfirmSignup />
+            } />
           </Routes>
         </UserProvider>
       </AuthProvider>

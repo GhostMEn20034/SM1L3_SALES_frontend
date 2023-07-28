@@ -1,12 +1,16 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import useAxios from "../../utils/useAxios";
 import { Box, Typography, TextField, Button, Alert, Link } from "@mui/material";
+import jwt_decode from 'jwt-decode';
+import AuthContext from "../../context/AuthContext";
 
-export default function ConfirmNewEmail() {
+export default function ConfirmSignup() {
     const [OTP, setOTP] = useState("");
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+
+    const {setAuthTokens, setUser} = useContext(AuthContext);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -25,32 +29,38 @@ export default function ConfirmNewEmail() {
         padding: 3
     };
 
-    const returnBack = () => {
-        navigate(-1);
-    }
-
     const sendOTP = async () => {
         try {
-            await api.post('/api/verification/change-email/', {
+            let response = await api.post('/api/verification/signup-confirmation/', {
                 code: OTP,
-                new_email: email
+                token: sessionStorage.getItem("token")
             });
-
-            setSuccess("Email changed successfully");
+            let response_data = await response.data;
+            setSuccess("Account verified successfully");
     
             setTimeout(() => {
-                navigate('/your-account/personal-info');
+                setAuthTokens(response_data);
+                setUser(jwt_decode(response_data.access));
+                localStorage.setItem("authTokens", JSON.stringify(response_data));
+                navigate("/");
               }, 1000);
+            await console.log(response.data)
         } catch (error) {
-            setError(error.response.data.error)
+            setError(error.response.data.error);
         }
     }
 
     const resendOTP = async () => {
         try {
-            await api.post(`/api/user/change-email/`, {
-                new_email: email
+            let response = await api.post(`/api/verification/resend-otp/`, {
+                token: sessionStorage.getItem("token"),
+                action_type: 'signup-confirmation'
             });
+
+            let response_data = await response.data;
+            sessionStorage.setItem("token", response_data.token);
+            
+
             setSuccess("A new One Time Password (OTP) has been sent.")
         } catch (error) {
             setError(error.response.data.error)
@@ -67,21 +77,12 @@ export default function ConfirmNewEmail() {
                 <Box sx={style}>
                     <Box>
                         <Typography variant="h4">
-                            Verify email address
+                            Verify account
                         </Typography>
-                    </Box>
-                    <Box sx={{ mt: 1 }} display="flex">
-                        <Typography variant="body1">
-                            {email}
-                        </Typography>
-                        <Link component="button" variant="body2" onClick={returnBack} sx={{ ml: 1 }}>
-                            Change
-                        </Link>
-
                     </Box>
                     <Box sx={{ mt: 3 }}>
                         <Typography variant="body1">
-                            We've sent a One Time Password (OTP) to your email address. Please enter it below.
+                            We've sent a One Time Password (OTP) to your {email}. Please enter it below.
                         </Typography>
                     </Box>
                     {success && (

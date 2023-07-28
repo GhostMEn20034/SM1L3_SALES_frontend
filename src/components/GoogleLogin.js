@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import GoogleLogo from '../google.svg';
 import { Button, Box } from '@mui/material';
 import AuthContext from '../context/AuthContext';
@@ -9,13 +9,15 @@ import jwt_decode from 'jwt-decode';
 
 export default function GoogleLogin() {
 
+  let baseURL = process.env.REACT_APP_BASE_URL_USERS;
+
   const {setUser, setAuthTokens} = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   let getGoogleAuthLink = async () => {
     try {
-      let res = await axios.get(`http://localhost:8000/api/auth/social/o/google-oauth2/?redirect_uri=${document.URL}`, { withCredentials: true });
+      let res = await axios.get(`${baseURL}/api/auth/social/o/google-oauth2/?redirect_uri=${window.location.origin}/signin`, { withCredentials: true });
       let link = await res.data.authorization_url;
       console.log(res.headers);
       localStorage.setItem("afterOAuthLogin", true);
@@ -32,7 +34,7 @@ export default function GoogleLogin() {
       const urlParams = new URLSearchParams(queryString);
       let headers = new Headers();
       headers.append('Content-Type', 'application/x-www-form-urlencoded');
-      let res = await axios.post(`http://localhost:8000/api/auth/social/o/google-oauth2/`, urlParams, { headers: headers, withCredentials: true });
+      let res = await axios.post(`${baseURL}/api/auth/social/o/google-oauth2/`, urlParams, { headers: headers, withCredentials: true });
       let data = await res.data;
       localStorage.removeItem("afterOAuthLogin");
       setAuthTokens(data);

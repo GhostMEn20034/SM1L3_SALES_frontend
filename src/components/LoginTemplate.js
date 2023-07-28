@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GoogleLogin from './GoogleLogin';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
 import AuthContext from '../context/AuthContext';
 
 
@@ -35,7 +36,7 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
 
-    let {error, setError, loginUser} = useContext(AuthContext);
+    let { error, setError, loginUser } = useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -114,13 +115,18 @@ export default function SignIn() {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/signup" variant="body2">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
+                {error && (
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
+                )}
                 <Divider sx={{ my: 4 }}>
                     <Chip label="OR" />
                 </Divider>

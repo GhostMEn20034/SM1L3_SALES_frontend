@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     let [error, setError] = useState(null);
 
     const navigate = useNavigate();
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_BASE_URL_USERS;
 
     let loginUser = async (email, password) => {
 
@@ -45,6 +45,18 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 setError("Incorrect password or email");
+            }
+
+            if (error.response.status === 400) {
+                let token = await error.response.data.token;
+                sessionStorage.setItem("token", token);
+                await navigate({
+                    pathname: '/confirm-signup'
+                },
+                {
+                    state: {email: email}
+                }
+                );
             }
         }
 

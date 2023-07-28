@@ -4,11 +4,28 @@ import jwt_decode from "jwt-decode";
 import { useContext } from 'react'
 import AuthContext from '../context/AuthContext'
 
-const baseUrl = process.env.REACT_APP_BASE_URL;
 
-
-const useAxios = () => {
+const useAxios = (microserviceBaseURL="") => {
     const {logoutUser, authTokens, setUser, setAuthTokens} = useContext(AuthContext)
+
+    let baseUrl;
+
+    switch (microserviceBaseURL) {
+        case "users":
+            baseUrl = process.env.REACT_APP_BASE_URL_USERS;
+            break;
+        
+        case "products":
+            baseUrl = process.env.REACT_APP_BASE_URL_PRODUCTS;
+            break;
+        
+        case "orders":
+            baseUrl = process.env.REACT_APP_BASE_URL_ORDERS;
+            break;
+        
+        default:
+            baseUrl = process.env.REACT_APP_BASE_URL_USERS;
+    }
 
     const axiosInstance = axios.create({
         baseURL: baseUrl,
