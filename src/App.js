@@ -10,13 +10,15 @@ import ChangePersonalInfoPage from './pages/ChangePersonalInfoPage';
 import ConfirmNewEmail from './components/Confirmation/ConfirmNewEmail';
 import ConfirmSignup from './components/Confirmation/SignupConfirmation';
 import SignUpPage from './pages/SignupPage';
+import { ResetPasswordEnterEmail } from './components/ResetPasswordComponents';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 
 function App() {
 
   const location = useLocation();
 
-  const authRoutes = ['/signin', '/signup', '/confirm-signup', '/reset-password', '/confirm-email', '/change-email/verify'];
+  const authRoutes = ['/signin', '/signup', '/confirm-signup', '/reset-password', '/reset-password/confirm', '/confirm-email', '/change-email/verify'];
 
   return (
     <>
@@ -57,6 +59,12 @@ function App() {
             <Route path='/confirm-signup' element={
               <ConfirmSignup />
             } />
+            <Route path='/reset-password' element={
+              <ResetPasswordEnterEmail />
+            } />
+            <Route path='/reset-password/confirm' element={
+              <ResetPasswordPage />
+            }/>
           </Routes>
         </UserProvider>
       </AuthProvider>
