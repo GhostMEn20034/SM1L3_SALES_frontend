@@ -12,6 +12,9 @@ import ConfirmSignup from './components/Confirmation/SignupConfirmation';
 import SignUpPage from './pages/SignupPage';
 import { ResetPasswordEnterEmail } from './components/ResetPasswordComponents';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import AddressesPage from './pages/AddressesPage';
+import AddAddressPage from './pages/AddAddressPage';
+import EditAddressPage from './pages/EditAddressPage';
 
 
 function App() {
@@ -64,6 +67,22 @@ function App() {
             } />
             <Route path='/reset-password/confirm' element={
               <ResetPasswordPage />
+            } />
+
+            <Route path='/your-account/addresses' element={
+              <PrivateRoute>
+                <AddressesPage />
+              </PrivateRoute>
+            } />
+            <Route path='/your-account/addresses/add' element={
+              <PrivateRoute>
+                <AddAddressPage />
+              </PrivateRoute>
+            } />
+            <Route path='/your-account/addresses/edit' element={
+              <PrivateRoute>
+                <EditAddressPage />
+              </PrivateRoute>
             }/>
           </Routes>
         </UserProvider>

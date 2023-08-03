@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
     TextField, Box, Button, Typography,
@@ -9,7 +9,6 @@ import MyDatePicker from "../MyDatePicker";
 import PhoneField from '../PhoneNumberField';
 import useAxios from '../../utils/useAxios';
 import dayjs from "dayjs";
-import AuthContext from "../../context/AuthContext";
 import useUserInfo from "../../utils/useUserInfo";
 
 
@@ -259,7 +258,7 @@ export function ChangePhoneNumber({ userData }) {
                 </Box>
                 )}
                 <Box sx={{mt: 3}}>
-                    <PhoneField value={phoneNumber} onChange={setPhoneNumber} />
+                    <PhoneField value={phoneNumber} onChange={setPhoneNumber} size="medium" />
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updatePhoneNumber}

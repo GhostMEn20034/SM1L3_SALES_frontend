@@ -3,7 +3,7 @@ import { ChangeFullName, ChangeDateOfBirth, ChangeEmail,
 } from "../components/PersonalInfoPageComponents/PersonalInfoInputs";
 import { useLocation } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import BreadCrump from "../components/BreadCrump";
+import BreadCrump from "../components/BreadCrumpEditInfo";
 import { fields } from "../components/PersonalInfoPageComponents/PersonalInfoFields";
 
 

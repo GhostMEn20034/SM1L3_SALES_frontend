@@ -1,6 +1,6 @@
 import PersonalInfo from "../components/PersonalInfoPageComponents/PersonalInfo";
 import { Box, Typography } from "@mui/material";
-import BreadCrump from "../components/BreadCrump";
+import BreadCrump from "../components/BreadCrumpEditInfo";
 
 export default function PersonalInfoPage() {
     return (

@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Box, Link, Typography } from "@mui/material";
 
-export default function BreadCrump({fieldNameTochange}) {
+export default function BreadCrumpOtherPages() {
     const location = useLocation();
 
     const convertCrumb = (crumb) => {
@@ -19,10 +19,6 @@ export default function BreadCrump({fieldNameTochange}) {
         .map((crumb, index, array) => {
             currentLink += `/${crumb}`
 
-            if (crumb === "change") {
-                crumb += " " + fieldNameTochange;
-            }
-
             return (
                 <>
                     <Box className="crumb" key={crumb}>
@@ -30,7 +26,7 @@ export default function BreadCrump({fieldNameTochange}) {
                             <Typography variant="body1">{convertCrumb(crumb)}</Typography>
                         </Link>
                     </Box>
-                    <Box sx={{ px: 1 }}>
+                    <Box sx={{ px: 1 }} key={index}>
                         {index < array.length - 1 && <Typography variant="body1">{">"}</Typography>}
                     </Box>
                 </>

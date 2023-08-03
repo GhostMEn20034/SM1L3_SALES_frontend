@@ -13,7 +13,7 @@ export default function useUserInfo() {
     try {
       // Await the response from the API
       let response = await api.get(`/api/user/personal-info/`);
-      let data = response.data;
+      let data = await response.data;
       updateUserInfo(data);
     } catch (error) {
       updateUserInfo({})
@@ -28,7 +28,7 @@ export default function useUserInfo() {
       fetchUserInfo();
     }
       
-  }, [userInfo, updateUserInfo]); // Run only when userInfo or updateUserInfo changes
+  }, [userInfo]); // Run only when userInfo or updateUserInfo changes
 
   // Return the user info, loading and update function
   return { userInfo, updateUserInfo };
