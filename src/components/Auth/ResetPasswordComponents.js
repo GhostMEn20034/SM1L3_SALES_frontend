@@ -25,7 +25,7 @@ export function ResetPasswordEnterEmail () {
 
     const handleSubmit = async () => {
         try {
-            let response = await api.post('/api/user/reset-password/', {email: email});
+            let response = await api.post('/api/user/reset-password/request', {email: email});
 
             let response_data = await response.data;
             sessionStorage.setItem("token", response_data.token);
@@ -110,7 +110,7 @@ export function ResetPasswordVerificateEmail ({setSubmitted}) {
 
     const handleSubmit = async () => {
         try {
-            let response = await api.post('/api/verification/confirm-password-reset-request/', {
+            let response = await api.post('/api/verification/reset-password/confirm', {
                 code: OTP,
                 token: sessionStorage.getItem("token")
             });
@@ -218,7 +218,7 @@ export function ResetPasswordEnterNewPassword () {
 
     const handleSubmit = async () => {
         try {
-            await api.post('/api/verification/reset-password/', {
+            await api.post('/api/verification/reset-password/update', {
                 password: password,
                 token: sessionStorage.getItem("token")
             });

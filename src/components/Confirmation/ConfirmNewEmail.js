@@ -31,7 +31,7 @@ export default function ConfirmNewEmail() {
 
     const sendOTP = async () => {
         try {
-            await api.post('/api/verification/change-email/', {
+            await api.post('/api/verification/change-email/confirm', {
                 code: OTP,
                 new_email: email
             });
@@ -39,7 +39,7 @@ export default function ConfirmNewEmail() {
             setSuccess("Email changed successfully");
     
             setTimeout(() => {
-                navigate('/your-account/personal-info');
+                navigate('/your-account/personal-information');
               }, 1000);
         } catch (error) {
             setError(error.response.data.error)
@@ -48,7 +48,7 @@ export default function ConfirmNewEmail() {
 
     const resendOTP = async () => {
         try {
-            await api.post(`/api/user/change-email/`, {
+            await api.post(`/api/user/change-email/request`, {
                 new_email: email
             });
             setSuccess("A new One Time Password (OTP) has been sent.")

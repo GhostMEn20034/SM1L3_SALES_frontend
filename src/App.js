@@ -3,11 +3,9 @@ import AppBarMenu from './components/AppBarMenu';
 import Login from './pages/Auth/LoginPage';
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
-import PrivateRoute from './utils/PrivateRoute';
 
+import PrivateRoute from './utils/PrivateRoute';
 import ConfirmNewEmail from './components/Confirmation/ConfirmNewEmail';
-import { ResetPasswordEnterEmail } from './components/Auth/ResetPasswordComponents';
-import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
 import AccountRoutes from './routes/Accounts';
 import AddressRoutes from './routes/Addresses';
 import SignUpRoutes from './routes/SignUp';

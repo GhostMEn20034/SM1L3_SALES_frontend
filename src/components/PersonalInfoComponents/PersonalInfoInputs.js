@@ -14,12 +14,13 @@ import useUserInfo from "../../utils/useUserInfo";
 
 
 const updatePersonalInfo = async (fields, setError, setSuccess, navigate, api) => {
-    
-    /// params:
-    ///    - fields -- fields to update
-    ///    - setError -- useState object for setting error
-    ///    - setSuccess -- useState object for setting success
-    ///    - navigate -- useNavigate hook
+    /**
+     * params:
+     * - fields -- fields to update
+     * - setError -- useState object for setting error
+     * - setSuccess -- useState object for setting success
+     * - navigate -- useNavigate hook
+     */
     
     try {
         let response = await api.patch(`/api/user/update-info/`, 
@@ -350,11 +351,11 @@ export function ChangeEmail({ userData }) {
 
     const updateEmail = async () => {
         try {
-            await api.post(`/api/user/change-email/`, {
+            await api.post(`/api/user/change-email/request`, {
                 new_email: newEmail
             });
             
-            await navigate({
+            navigate({
                 pathname: '/change-email/verify'
             },
             {
