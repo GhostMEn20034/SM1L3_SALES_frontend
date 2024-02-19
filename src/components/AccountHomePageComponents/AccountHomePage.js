@@ -5,7 +5,7 @@ import HomePageOption from './HomePageCards';
 import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import MapsHomeWorkRoundedIcon from '@mui/icons-material/MapsHomeWorkRounded';
-import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
+import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import { Typography } from '@mui/material';
 
@@ -17,10 +17,10 @@ const settings = [
         nextDestanation: '/orders'
     },
     {
-        settingName: "Personal info",
-        settingDescription: "Edit your personal information",
+        settingName: "Personal information",
+        settingDescription: "View, edit your personal information",
         settingIcon: <LockOpenOutlinedIcon sx={{fontSize: "100px", color: "#353582cf"}} />,
-        nextDestanation: '/personal-info'
+        nextDestanation: '/personal-information'
     },
     {
         settingName: "Your addresses",
@@ -29,10 +29,10 @@ const settings = [
         nextDestanation: '/addresses'
     },
     {
-        settingName: "Gift cards",
-        settingDescription: "View balance on gift card balance or purchase a new gift card",
-        settingIcon: <CardGiftcardRoundedIcon sx={{fontSize: "100px", color: "#353582cf"}} />,
-        nextDestanation: '/gift-cards'
+        settingName: "History",
+        settingDescription: "View all products you've seen",
+        settingIcon: <RestoreOutlinedIcon sx={{fontSize: "100px", color: "#353582cf"}} />,
+        nextDestanation: '/history'
     },
     {
         settingName: "Payments",
@@ -74,7 +74,7 @@ export default function HomePageOptions() {
     const rows = Math.ceil(settings.length / optionsPerRow);
 
     // Create an array of row components with sliced settings
-    const rowComponents = Array.from({ length: rows }, (v, i) => (
+    const rowComponents = Array.from({ length: rows }, (_, i) => (
         <Grid container item spacing={3} key={i}>
             <FormRow rowSettings={settings.slice(i * optionsPerRow, (i + 1) * optionsPerRow)} />
         </Grid>

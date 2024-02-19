@@ -14,7 +14,8 @@ import GoogleLogin from './GoogleLogin';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
-import AuthContext from '../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -110,12 +111,12 @@ export default function SignIn() {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="/reset-password" variant="body2">
+                                <Link variant="body2" component={RouterLink} to="/reset-password/request">
                                     Forgot password?
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="/signup" variant="body2">
+                                <Link variant="body2" component={RouterLink} to="/signup">
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

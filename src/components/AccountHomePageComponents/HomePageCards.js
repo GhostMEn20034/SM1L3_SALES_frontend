@@ -3,7 +3,7 @@ import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function HomePageOption({name, description, icon, nextDestanation}) {
 
@@ -13,7 +13,7 @@ export default function HomePageOption({name, description, icon, nextDestanation
 
     return (
         <Card sx={{ maxWidth: 345}}>
-            <CardActionArea href={href}>
+            <CardActionArea component={Link} to={href}>
                 <Box display="flex"
                     justifyContent="center"
                     alignItems="center"

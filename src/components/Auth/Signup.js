@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import GoogleLogin from './GoogleLogin';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -58,7 +59,7 @@ export default function SignUp() {
 
             let response_data = await response.data;
             sessionStorage.setItem("token", response_data.token);
-            navigate({ pathname: '/confirm-signup' }, { state: { "email": email} });
+            navigate({ pathname: '/signup/confirm' }, { state: { "email": email} });
         } catch (error) {
             setError(error.response.data.error);
         }
@@ -160,7 +161,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/signin" variant="body2">
+                                <Link variant="body2" component={RouterLink} to="/signin">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

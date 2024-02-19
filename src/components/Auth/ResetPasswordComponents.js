@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Box, Typography, TextField, Button, Alert, Link } from "@mui/material";
-import useAxios from "../utils/useAxios";
+import useAxios from "../../utils/useAxios";
 import { useLocation, useNavigate } from "react-router-dom";
-
-
+import { Link as RouterLink } from 'react-router-dom';
 
 
 export function ResetPasswordEnterEmail () {
@@ -78,7 +77,7 @@ export function ResetPasswordEnterEmail () {
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <Link href="/signin" variant="body2">
+                        <Link href="/signin" variant="body2" component={RouterLink} to="/signin">
                             Go back
                         </Link>
                     </Box>
@@ -185,7 +184,7 @@ export function ResetPasswordVerificateEmail ({setSubmitted}) {
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <Link href="/reset-password" variant="body2" sx={{mr: 2}}>
+                        <Link variant="body2" sx={{mr: 2}} component={RouterLink} to="/reset-password">
                             Go back
                         </Link>
                         <Link component="button" variant="body2" onClick={resendOTP} sx={{ml: 2}}>

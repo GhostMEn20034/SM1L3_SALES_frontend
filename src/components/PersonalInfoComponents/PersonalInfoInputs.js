@@ -5,14 +5,11 @@ import {
     InputLabel, Select, MenuItem, FormControl,
     Alert
 } from "@mui/material";
-import MyDatePicker from "../MyDatePicker";
+import DayJsDatePicker from "../DayJsDatePicker";
 import PhoneField from '../PhoneNumberField';
 import useAxios from '../../utils/useAxios';
 import dayjs from "dayjs";
 import useUserInfo from "../../utils/useUserInfo";
-
-
-
 
 
 
@@ -23,7 +20,6 @@ const updatePersonalInfo = async (fields, setError, setSuccess, navigate, api) =
     ///    - setError -- useState object for setting error
     ///    - setSuccess -- useState object for setting success
     ///    - navigate -- useNavigate hook
-    ///    - api -- useAxios hook (located in utils/useAxios.js)
     
     try {
         let response = await api.patch(`/api/user/update-info/`, 
@@ -50,7 +46,7 @@ export function ChangeFullName({ userData }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const { userInfo, updateUserInfo } = useUserInfo();
+    const {userInfo ,updateUserInfo } = useUserInfo();
 
     const api = useAxios();
     const navigate = useNavigate();
@@ -68,7 +64,7 @@ export function ChangeFullName({ userData }) {
             setSuccess(data);
             
             // Call the updateUserInfo function with the new first name and last name
-            updateUserInfo({ first_name: firstName, last_name: lastName });
+            updateUserInfo({...userInfo ,first_name: firstName, last_name: lastName });
 
             setTimeout(() => {
                 navigate(-1);
@@ -148,7 +144,7 @@ export function ChangeDateOfBirth({ userData }) {
                 </Box>
                 )}
                 <Box sx={{mt: 3}}>
-                    <MyDatePicker value={dateOfBirth} setValue={setDateOfBirth} />
+                    <DayJsDatePicker value={dateOfBirth} setValue={setDateOfBirth} label={"Date of birth"}/>
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updateDateOfBirth}
@@ -176,7 +172,6 @@ export function ChangeSex({ userData }) {
             navigate, api
             );
     }
-
 
     return (
         <>
@@ -229,6 +224,7 @@ export function ChangePhoneNumber({ userData }) {
     const [success, setSuccess] = useState(null);
 
     const navigate = useNavigate();
+    const {userInfo ,updateUserInfo } = useUserInfo();
 
     const api = useAxios();
 
@@ -237,6 +233,7 @@ export function ChangePhoneNumber({ userData }) {
             {"phone_number": phoneNumber}, setError, setSuccess,
             navigate, api
             );
+        updateUserInfo({...userInfo, "phone_number": phoneNumber});
     }
 
     return (
@@ -341,10 +338,9 @@ export function ChangePassword() {
 }
 
 
-
 export function ChangeEmail({ userData }) {
-    const [currentEmail, setCurrentEmail] = useState(userData.email);
-    const [newEmail, setNewEmail] = useState(userData.email);
+    const currentEmail = userData.email;
+    const [newEmail, setNewEmail] = useState();
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 

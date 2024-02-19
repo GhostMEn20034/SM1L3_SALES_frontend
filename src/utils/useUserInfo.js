@@ -16,7 +16,7 @@ export default function useUserInfo() {
       let data = await response.data;
       updateUserInfo(data);
     } catch (error) {
-      updateUserInfo({})
+      updateUserInfo({});
     }
   }
 

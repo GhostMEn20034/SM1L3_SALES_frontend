@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useContext } from 'react';
-import GoogleLogo from '../google.svg';
+import GoogleLogo from '../../google.svg';
 import { Button, Box } from '@mui/material';
-import AuthContext from '../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
 
@@ -19,7 +19,6 @@ export default function GoogleLogin() {
     try {
       let res = await axios.get(`${baseURL}/api/auth/social/o/google-oauth2/?redirect_uri=${window.location.origin}/signin`, { withCredentials: true });
       let link = await res.data.authorization_url;
-      console.log(res.headers);
       localStorage.setItem("afterOAuthLogin", true);
       window.location.assign(link);
     } catch (err) {

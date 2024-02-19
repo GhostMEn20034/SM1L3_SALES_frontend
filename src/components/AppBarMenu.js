@@ -19,6 +19,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Link from '@mui/material/Link';
+import { Link as RouterLink} from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import useUserInfo from '../utils/useUserInfo';
 
@@ -75,7 +76,7 @@ function AppBarMenu() {
         <AppBar position="fixed" color='primary' sx={{ marginBottom: 100 }}>
           <Container maxWidth="xl">
             <Toolbar disableGutters variant='dense' style={{ height: 70 }}>
-              <Link href="/" underline="none">
+              <Link  underline="none" component={RouterLink} to="/">
                 <SvgIcon component={SmileSalesLogo} inheritViewBox
                   sx={{ width: "120px", height: "70px", ":hover": { "cursor": "pointer" } }}
                   onClick={() => console.log("Hello")}
@@ -132,9 +133,10 @@ function AppBarMenu() {
                 {pages.map((page, index) => (
                   <Button
                     key={page}
-                    href={app_bar_links[index]}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: '#D5D507', display: 'block', marginRight: 2 }}
+                    component={RouterLink}
+                    to={app_bar_links[index]}
                   >
                     {page}
                   </Button>
@@ -145,9 +147,10 @@ function AppBarMenu() {
                       <ShoppingCartIcon />
                     </StyledBadge>}
                   key={"Cart"}
-                  href='/cart'
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: '#D5D507', marginRight: 2, width: "100px" }}
+                  component={RouterLink}
+                  to={'/cart'}
                 >
                   {"Cart"}
                 </Button>
@@ -178,7 +181,7 @@ function AppBarMenu() {
                       onClose={handleCloseUserMenu}
                     >
                       {settings.map((setting, index) => (
-                        <Link href={setting_links[index]} underline="none" key={setting}>
+                        <Link underline="none" key={setting} component={RouterLink} to={setting_links[index]}>
                           <MenuItem key={setting} onClick={handleCloseUserMenu}>
                             <Typography textAlign="center" color="#D5D507">{setting}</Typography>
                           </MenuItem>
@@ -191,10 +194,11 @@ function AppBarMenu() {
                   </>
                 ) : (
                   <Button
-                    href='/signin'
                     key={"Login"}
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, backgroundColor: '#D5D507', ":hover": { backgroundColor: "#b8b804" }, display: 'block', marginRight: 2 }}
+                    sx={{ my: 2, backgroundColor: '#D5D507', ":hover": { backgroundColor: "#b8b804" }, display: 'block', marginRight: -2 }}
+                    component={RouterLink}
+                    to={'/signin'}
                   >
                     {"Login"}
                   </Button>

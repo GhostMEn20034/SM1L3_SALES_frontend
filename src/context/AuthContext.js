@@ -50,8 +50,8 @@ export const AuthProvider = ({ children }) => {
             if (error.response.status === 400) {
                 let token = await error.response.data.token;
                 sessionStorage.setItem("token", token);
-                await navigate({
-                    pathname: '/confirm-signup'
+                navigate({
+                    pathname: '/signup/confirm'
                 },
                 {
                     state: {email: email}

@@ -44,7 +44,6 @@ export default function ConfirmSignup() {
                 localStorage.setItem("authTokens", JSON.stringify(response_data));
                 navigate("/");
               }, 1000);
-            await console.log(response.data)
         } catch (error) {
             setError(error.response.data.error);
         }
