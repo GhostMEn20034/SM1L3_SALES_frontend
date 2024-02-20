@@ -57,10 +57,10 @@ export default function AddAddress() {
     }
 
     useEffect(() => {
-        if (userInfo) {
-            setFirstName(userInfo.first_name);
-            setLastName(userInfo.last_name);
-            setPhoneNumber(userInfo.phone_number);
+        if (userInfo?.user && Object.keys(userInfo.user).length > 0) {
+            setFirstName(userInfo.user.first_name);
+            setLastName(userInfo.user.last_name);
+            setPhoneNumber(userInfo.user.phone_number);
         }
     }, [userInfo]);
 

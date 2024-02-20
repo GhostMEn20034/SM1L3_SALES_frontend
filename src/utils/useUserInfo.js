@@ -12,9 +12,10 @@ export default function useUserInfo() {
   const fetchUserInfo = async () => {
     try {
       // Await the response from the API
-      let response = await api.get(`/api/user/personal-info/`);
+      let response = await api.get(`/api/user/full-info/`);
       let data = await response.data;
       updateUserInfo(data);
+      console.log(data);
     } catch (error) {
       updateUserInfo({});
     }

@@ -161,7 +161,7 @@ function AppBarMenu() {
                   <>
                     <Tooltip title="Open settings">
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        { userInfo && (<Avatar alt={`${userInfo.first_name} ${userInfo.last_name}`} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />) }
+                        { userInfo?.user && (<Avatar alt={`${userInfo.user.first_name} ${userInfo.user.last_name}`} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />) }
                       </IconButton>
                     </Tooltip>
                     <Menu

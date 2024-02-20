@@ -29,7 +29,7 @@ export default function PersonalInfo() {
   const location = useLocation();
 
   const getUserData = async () => {
-    let response = await api.get("/api/user/personal-info/");
+    let response = await api.get("/api/user/info/");
     let data = await response.data;
     setUserData(data);
   }
@@ -57,7 +57,7 @@ export default function PersonalInfo() {
         );
       case "date_of_birth":
         return (
-          <Typography>{dayjs(userData[field.field]).format('YYYY-MM-DD')}</Typography>
+          <Typography>{dayjs(userData[field.field]).format('MMMM D, YYYY')}</Typography>
         );
       default:
         return (
