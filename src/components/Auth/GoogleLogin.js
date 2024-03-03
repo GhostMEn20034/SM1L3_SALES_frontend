@@ -3,7 +3,6 @@ import { useEffect, useContext } from 'react';
 import GoogleLogo from '../../google.svg';
 import { Button, Box } from '@mui/material';
 import AuthContext from '../../context/AuthContext';
-import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
 
 
@@ -13,13 +12,11 @@ export default function GoogleLogin() {
 
   const {setUser, setAuthTokens} = useContext(AuthContext);
 
-  const navigate = useNavigate();
-
   let getGoogleAuthLink = async () => {
     try {
       let res = await axios.get(`${baseURL}/api/auth/social/o/google-oauth2/?redirect_uri=${window.location.origin}/signin`, { withCredentials: true });
       let link = await res.data.authorization_url;
-      localStorage.setItem("afterOAuthLogin", true);
+      sessionStorage.setItem("afterOAuthLogin", true);
       window.location.assign(link);
     } catch (err) {
       console.log("Unable to login with google");
@@ -35,11 +32,12 @@ export default function GoogleLogin() {
       headers.append('Content-Type', 'application/x-www-form-urlencoded');
       let res = await axios.post(`${baseURL}/api/auth/social/o/google-oauth2/`, urlParams, { headers: headers, withCredentials: true });
       let data = await res.data;
-      localStorage.removeItem("afterOAuthLogin");
+      sessionStorage.removeItem("afterOAuthLogin");
       setAuthTokens(data);
       setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/");
+      localStorage.removeItem("cartUuid");
+      window.location.assign('/');
     } catch (err) {
       console.log("Something went wrong");
     }
@@ -51,7 +49,7 @@ export default function GoogleLogin() {
     const urlParams = new URLSearchParams(queryString);
     let code = urlParams.get("code");
     let auth_state = urlParams.get("state");
-    let afterOAuthLogin = localStorage.getItem("afterOAuthLogin");
+    let afterOAuthLogin = sessionStorage.getItem("afterOAuthLogin");
     if (code && auth_state && afterOAuthLogin) {
       googleAuth();
     }

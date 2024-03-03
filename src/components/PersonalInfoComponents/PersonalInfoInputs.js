@@ -1,15 +1,15 @@
-import { useState} from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     TextField, Box, Button, Typography,
     InputLabel, Select, MenuItem, FormControl,
     Alert
 } from "@mui/material";
-import DayJsDatePicker from "../DayJsDatePicker";
-import PhoneField from '../PhoneNumberField';
+import DayJsDatePicker from "../CommonComponents/DayJsDatePicker";
+import PhoneField from '../CommonComponents/PhoneNumberField';
 import useAxios from '../../utils/useAxios';
 import dayjs from "dayjs";
-import useUserInfo from "../../utils/useUserInfo";
+import UserContext from "../../context/UserContext";
 
 
 
@@ -21,20 +21,20 @@ const updatePersonalInfo = async (fields, setError, setSuccess, navigate, api) =
      * - setSuccess -- useState object for setting success
      * - navigate -- useNavigate hook
      */
-    
+
     try {
-        let response = await api.patch(`/api/user/update-info/`, 
+        let response = await api.patch(`/api/user/update-info/`,
             {
-            ...fields
+                ...fields
             });
 
         let data = await response.data.success;
-        
+
         setSuccess(data);
 
         setTimeout(() => {
             navigate(-1);
-          }, 2000);
+        }, 2000);
 
     } catch (error) {
         setError(error.response.data.error)
@@ -47,30 +47,28 @@ export function ChangeFullName({ userData }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const {userInfo ,updateUserInfo } = useUserInfo();
+    const { refreshUserInfo } = useContext(UserContext);
 
     const api = useAxios();
     const navigate = useNavigate();
 
     const updateFullName = async () => {
         try {
-            let response = await api.patch(`/api/user/update-info/`, 
+            let response = await api.patch(`/api/user/update-info/`,
                 {
-                "first_name": firstName,
-                "last_name": lastName 
+                    "first_name": firstName,
+                    "last_name": lastName
                 });
-    
+
             let data = await response.data.success;
-            
+
             setSuccess(data);
-            
-            // Call the updateUserInfo function with the new first name and last name
-            updateUserInfo({...userInfo ,first_name: firstName, last_name: lastName });
+            refreshUserInfo();
 
             setTimeout(() => {
                 navigate(-1);
-              }, 2000);
-    
+            }, 2000);
+
         } catch (error) {
             setError(error.response.data.error)
         }
@@ -85,24 +83,24 @@ export function ChangeFullName({ userData }) {
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
-                <Box sx={{mt: 3}}>
-                    <TextField label='First name' size="small" value={firstName} onChange={(e) => {setFirstName(e.target.value)}} />
+                <Box sx={{ mt: 3 }}>
+                    <TextField label='First name' size="small" value={firstName} onChange={(e) => { setFirstName(e.target.value) }} />
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                    <TextField label='Last name' size="small" value={lastName} onChange={(e) => {setLastName(e.target.value)}} />
+                    <TextField label='Last name' size="small" value={lastName} onChange={(e) => { setLastName(e.target.value) }} />
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updateFullName}
-                    sx={{ mt: 3, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
+                        sx={{ mt: 3, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
                 </Box>
             </Box>
         </>
@@ -121,9 +119,9 @@ export function ChangeDateOfBirth({ userData }) {
 
     const updateDateOfBirth = () => {
         updatePersonalInfo(
-            {"date_of_birth": dateOfBirth ? dateOfBirth.format("YYYY-MM-DD") : null}, setError, setSuccess,
+            { "date_of_birth": dateOfBirth ? dateOfBirth.format("YYYY-MM-DD") : null }, setError, setSuccess,
             navigate, api
-            );
+        );
     }
 
     return (
@@ -135,21 +133,21 @@ export function ChangeDateOfBirth({ userData }) {
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
-                <Box sx={{mt: 3}}>
-                    <DayJsDatePicker value={dateOfBirth} setValue={setDateOfBirth} label={"Date of birth"}/>
+                <Box sx={{ mt: 3 }}>
+                    <DayJsDatePicker value={dateOfBirth} setValue={setDateOfBirth} label={"Date of birth"} />
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updateDateOfBirth}
-                    sx={{ mt: 4, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
+                        sx={{ mt: 4, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
                 </Box>
             </Box>
         </>
@@ -169,9 +167,9 @@ export function ChangeSex({ userData }) {
 
     const updateSex = () => {
         updatePersonalInfo(
-            {"sex": gender}, setError, setSuccess,
+            { "sex": gender }, setError, setSuccess,
             navigate, api
-            );
+        );
     }
 
     return (
@@ -183,16 +181,16 @@ export function ChangeSex({ userData }) {
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
-                <Box sx={{mt: 3}}>
+                <Box sx={{ mt: 3 }}>
                     <FormControl sx={{ m: 1, minWidth: 80 }}>
                         <InputLabel id="demo-simple-select-autowidth-label">Sex</InputLabel>
                         <Select
@@ -212,7 +210,7 @@ export function ChangeSex({ userData }) {
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updateSex}
-                    sx={{ mt: 2, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
+                        sx={{ mt: 2, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Save changes</Button>
                 </Box>
             </Box>
         </>
@@ -225,16 +223,16 @@ export function ChangePhoneNumber({ userData }) {
     const [success, setSuccess] = useState(null);
 
     const navigate = useNavigate();
-    const {userInfo ,updateUserInfo } = useUserInfo();
+    const { refreshUserInfo } = useContext(UserContext);
 
     const api = useAxios();
 
     const updatePhoneNumber = () => {
+        refreshUserInfo();
         updatePersonalInfo(
-            {"phone_number": phoneNumber}, setError, setSuccess,
+            { "phone_number": phoneNumber }, setError, setSuccess,
             navigate, api
-            );
-        updateUserInfo({...userInfo, "phone_number": phoneNumber});
+        );
     }
 
     return (
@@ -246,16 +244,16 @@ export function ChangePhoneNumber({ userData }) {
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
-                <Box sx={{mt: 3}}>
+                <Box sx={{ mt: 3 }}>
                     <PhoneField value={phoneNumber} onChange={setPhoneNumber} size="medium" />
                 </Box>
                 <Box>
@@ -281,21 +279,21 @@ export function ChangePassword() {
 
     const changePassword = async () => {
         try {
-            let response = await api.patch(`/api/user/change-password/`, 
+            let response = await api.patch(`/api/user/change-password/`,
                 {
-                "old_password": oldPassword,
-                "new_password": newPassword,
-                "new_password_confirmation": newPasswordConfirmation
+                    "old_password": oldPassword,
+                    "new_password": newPassword,
+                    "new_password_confirmation": newPasswordConfirmation
                 });
-    
+
             let data = await response.data.success;
-            
+
             setSuccess(data);
-    
+
             setTimeout(() => {
                 navigate(-1);
-              }, 2000);
-    
+            }, 2000);
+
         } catch (error) {
             setError(error.response.data.error)
         }
@@ -311,14 +309,14 @@ export function ChangePassword() {
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
                 <Box sx={{ mt: 3 }}>
                     <TextField label="Old password" type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} sx={{ minWidth: 250 }} />
@@ -354,13 +352,13 @@ export function ChangeEmail({ userData }) {
             await api.post(`/api/user/change-email/request`, {
                 new_email: newEmail
             });
-            
+
             navigate({
                 pathname: '/change-email/verify'
             },
-            {
-                state: {email: newEmail}
-            }
+                {
+                    state: { email: newEmail }
+                }
             );
         } catch (error) {
             setError(error.response.data.error)
@@ -372,27 +370,27 @@ export function ChangeEmail({ userData }) {
             <Box sx={{ padding: 3 }}>
                 <Box sx={{ mb: 1 }}>
                     <Typography variant="body1">
-                        Your current email address: {currentEmail} <br/>
+                        Your current email address: {currentEmail} <br />
                         Enter the new email address you would like to associate with your account below. <br />
                         We will send you OTP (One Time Password) to that email.
                     </Typography>
                 </Box>
                 {success && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="success" onClose={() => setSuccess(null)}>{success}</Alert>
+                    </Box>
                 )}
                 {error && (
-                <Box sx={{mt: 2}}> 
-                    <Alert severity="error" onClose={() => setError(null)}>{error}</Alert> 
-                </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
-                <Box sx={{mt: 3}}>
-                    <TextField value={newEmail} onChange={(e) => setNewEmail(e.target.value)} sx={{minWidth: "300px"}} label="New email address"/>
+                <Box sx={{ mt: 3 }}>
+                    <TextField value={newEmail} onChange={(e) => setNewEmail(e.target.value)} sx={{ minWidth: "300px" }} label="New email address" />
                 </Box>
                 <Box>
                     <Button variant="contained" onClick={updateEmail}
-                    sx={{ mt: 3, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Continue</Button>
+                        sx={{ mt: 3, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>Continue</Button>
                 </Box>
             </Box>
         </>

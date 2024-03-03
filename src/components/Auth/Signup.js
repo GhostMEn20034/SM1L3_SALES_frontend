@@ -49,13 +49,21 @@ export default function SignUp() {
 
     const handleSubmit = async () => {
         try {
-            let response = await axios.post(`${baseURL}/api/user/create/`, {
+            let requestBody = {
                 first_name: firstName,
                 last_name: lastName,
                 email: email,
                 password1: password1,
-                password2: password2
-            });
+                password2: password2,
+            };
+            
+            let copyCartItemsFrom = localStorage.getItem("cartUuid")
+
+            if (copyCartItemsFrom) {
+                requestBody["copy_cart_items_from"] = copyCartItemsFrom;
+            }
+
+            let response = await axios.post(`${baseURL}/api/user/create/`, requestBody);
 
             let response_data = await response.data;
             sessionStorage.setItem("token", response_data.token);

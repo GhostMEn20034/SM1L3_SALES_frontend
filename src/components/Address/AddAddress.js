@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, TextField, Button, Grid, Typography } from "@mui/material";
 import CountrySelect from "./CountrySelect";
 import { MuiTelInput } from "mui-tel-input";
-import useUserInfo from "../../utils/useUserInfo";
+import UserContext from "../../context/UserContext";
 import useAxios from "../../utils/useAxios";
 import { useNavigate } from "react-router-dom";
 
 export default function AddAddress() {
-    const { userInfo } = useUserInfo();
+    const { userInfo } = useContext(UserContext);
 
     const [errors, setErrors] = useState({});
     const [country, setCountry] = useState("AT");

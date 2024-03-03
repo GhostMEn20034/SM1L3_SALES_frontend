@@ -14,14 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { SvgIcon } from '@mui/material';
 import { ReactComponent as SmileSalesLogo } from '../smile.svg';
-import { Search, SearchIconWrapper, StyledInputBase } from './SearchBar';
+import { Search, SearchIconWrapper, StyledInputBase } from './CommonComponents/SearchBar';
 import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Link from '@mui/material/Link';
 import { Link as RouterLink} from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
-import useUserInfo from '../utils/useUserInfo';
+import UserContext from '../context/UserContext';
 
 
 const pages = ['Catalogue', 'Orders'];
@@ -32,9 +32,9 @@ const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 function AppBarMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const {userInfo} = useUserInfo();
-
-  let { user, logoutUser } = useContext(AuthContext);
+  
+  const { userInfo } = useContext(UserContext);
+  const { user, logoutUser } = useContext(AuthContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -79,7 +79,6 @@ function AppBarMenu() {
               <Link  underline="none" component={RouterLink} to="/">
                 <SvgIcon component={SmileSalesLogo} inheritViewBox
                   sx={{ width: "120px", height: "70px", ":hover": { "cursor": "pointer" } }}
-                  onClick={() => console.log("Hello")}
                 />
               </Link>
               <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -143,7 +142,7 @@ function AppBarMenu() {
                 ))}
                 <Button
                   startIcon={
-                    <StyledBadge badgeContent={4} color="secondary" sx={{ marginRight: 1 }}>
+                    <StyledBadge badgeContent={userInfo?.cart ? userInfo?.cart?.count : 0} color="secondary" sx={{ marginRight: 1 }}>
                       <ShoppingCartIcon />
                     </StyledBadge>}
                   key={"Cart"}

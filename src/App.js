@@ -10,6 +10,7 @@ import AccountRoutes from './routes/Accounts';
 import AddressRoutes from './routes/Addresses';
 import SignUpRoutes from './routes/SignUp';
 import ResetPasswordRoutes from './routes/ResetPassword';
+import CartRoutes from './routes/Carts';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path='/your-account/addresses/*' element={<AddressRoutes />}/>
             <Route path='/signup/*' element={<SignUpRoutes />}/>
             <Route path='/reset-password/*' element={<ResetPasswordRoutes />}/>
+            <Route path='/cart/*' element={<CartRoutes />}/>
             <Route path='/change-email/verify' element={
               <PrivateRoute>
                 <ConfirmNewEmail />

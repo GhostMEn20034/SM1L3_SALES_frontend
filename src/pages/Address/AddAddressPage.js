@@ -1,19 +1,19 @@
 import { Box, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
-import AddAddress from "../../components/Addresses/AddAddress";
-import BreadCrump from "../../components/Navigation/BreadCrump";
-import { createBreadCrumpDataFromUrl } from "../../utils/breadCrump/createBreadCrumpData";
+import AddAddress from "../../components/Address/AddAddress";
+import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
+import { createBreadCrumbDataFromUrl } from "../../utils/breadCrumb/createBreadCrumbData";
 
 export default function AddAddressPage() {
     const location = useLocation();
-    const breadCrumpData = createBreadCrumpDataFromUrl(location.pathname);
+    const breadCrumbData = createBreadCrumbDataFromUrl(location.pathname);
 
     return (
         <Box display="flex" justifyContent="center">
             <Box sx={{ my: 4, width: "60%" }}>
                 <Box sx={{ mb: 1 }}>
-                    <BreadCrump breadCrumpData={breadCrumpData} />
+                    <BreadCrumb breadCrumbData={breadCrumbData} />
                 </Box>
                 <Typography sx={{ mb: 1 }} variant="h4">Add a new address</Typography>
                 <AddAddress />

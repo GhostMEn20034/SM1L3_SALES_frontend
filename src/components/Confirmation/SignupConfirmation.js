@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState, useContext } from "react";
 import useAxios from "../../utils/useAxios";
 import { Box, Typography, TextField, Button, Alert, Link } from "@mui/material";
@@ -13,7 +13,6 @@ export default function ConfirmSignup() {
     const {setAuthTokens, setUser} = useContext(AuthContext);
 
     const location = useLocation();
-    const navigate = useNavigate();
 
     const email = location.state.email;
 
@@ -42,7 +41,8 @@ export default function ConfirmSignup() {
                 setAuthTokens(response_data);
                 setUser(jwt_decode(response_data.access));
                 localStorage.setItem("authTokens", JSON.stringify(response_data));
-                navigate("/");
+                localStorage.removeItem("cartUuid");
+                window.location.assign("/");
               }, 1000);
         } catch (error) {
             setError(error.response.data.error);

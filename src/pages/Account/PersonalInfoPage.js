@@ -1,12 +1,12 @@
 import PersonalInfo from "../../components/PersonalInfoComponents/PersonalInfo";
 import { Box, Typography } from "@mui/material";
-import BreadCrump from "../../components/Navigation/BreadCrump";
+import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
 import { useLocation } from "react-router-dom";
-import { createBreadCrumpDataFromUrl } from "../../utils/breadCrump/createBreadCrumpData";
+import { createBreadCrumbDataFromUrl } from "../../utils/breadCrumb/createBreadCrumbData";
 
 export default function PersonalInfoPage() {
     const location = useLocation();
-    const breadCrumpData = createBreadCrumpDataFromUrl(location.pathname);
+    const breadCrumbData = createBreadCrumbDataFromUrl(location.pathname);
 
     return (
         <Box display="flex" justifyContent="center">
@@ -14,7 +14,7 @@ export default function PersonalInfoPage() {
                 <Box
                     marginTop={2}
                 >
-                    <BreadCrump breadCrumpData={breadCrumpData} />
+                    <BreadCrumb breadCrumbData={breadCrumbData} />
                 </Box>
                 <Box
                 >

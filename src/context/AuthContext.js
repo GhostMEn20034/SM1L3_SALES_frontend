@@ -40,7 +40,8 @@ export const AuthProvider = ({ children }) => {
                 setAuthTokens(response_data);
                 setUser(jwt_decode(response_data.access));
                 localStorage.setItem("authTokens", JSON.stringify(response_data));
-                navigate("/");
+                localStorage.removeItem("cartUuid");
+                window.location.assign("/");
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -81,7 +82,7 @@ export const AuthProvider = ({ children }) => {
             setAuthTokens(null);
             setUser(null);
             localStorage.removeItem('authTokens');
-            navigate('/');
+            window.location.assign("/");
         } catch (error) {
             console.log("Unable to logout");
         }

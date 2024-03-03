@@ -3,9 +3,9 @@ import {
     ChangeSex, ChangePhoneNumber, ChangePassword
 } from "../../components/PersonalInfoComponents/PersonalInfoInputs";
 import { useLocation } from "react-router-dom";
-import { createBreadCrumpDataFromUrl } from "../../utils/breadCrump/createBreadCrumpData";
+import { createBreadCrumbDataFromUrl } from "../../utils/breadCrumb/createBreadCrumbData";
 import { Box, Typography } from "@mui/material";
-import BreadCrump from "../../components/Navigation/BreadCrump";
+import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
 import { fields } from "../../components/PersonalInfoComponents/PersonalInfoFields";
 
 
@@ -50,7 +50,7 @@ export default function ChangePersonalInfoPage() {
     const fieldNameToDisplay = appAction === "changeFullName" ?
         "full name" : findFieldDisplayByAppAction(appAction);
 
-    const breadCrumpData = createBreadCrumpDataFromUrl(location.pathname, "Change " + fieldNameToDisplay);
+    const breadCrumbData = createBreadCrumbDataFromUrl(location.pathname, "Change " + fieldNameToDisplay);
 
     if (!appAction) {
         return <h1>SOMETHING WENT WRONG</h1>
@@ -62,7 +62,7 @@ export default function ChangePersonalInfoPage() {
                 <Box
                     marginTop={2}
                 >
-                    <BreadCrump breadCrumpData={breadCrumpData} />
+                    <BreadCrumb breadCrumbData={breadCrumbData} />
                 </Box>
                 <Box
                     marginTop={2}
