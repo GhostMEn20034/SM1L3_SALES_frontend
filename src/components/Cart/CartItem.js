@@ -1,7 +1,9 @@
+import { Box, Typography } from "@mui/material";
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+
 import ProductStock from "../Product/ProductStock";
 import ProductPrice from "./ProductPrice";
 import CartItemActionRow from "./CartItemActionRow";
-import { Box, Typography } from "@mui/material";
 
 export default function CartItem(props) {
     return (
@@ -30,7 +32,7 @@ export default function CartItem(props) {
                 <Box sx={{ mt: 1 }}>
                     <ProductStock stock={props.product?.stock} />
                 </Box>
-                <Box sx={{mt: 1.5}}>
+                <Box sx={{ mt: 1.5 }}>
                     <CartItemActionRow
                         stock={props.product?.stock}
                         maxOrderQuantity={props.product?.max_order_qty}
@@ -40,8 +42,16 @@ export default function CartItem(props) {
                         deleteCartItem={props.deleteCartItem}
                     />
                 </Box>
+                {props.product?.stock < 1 && (
+                    <Box sx={{ mt: 1 }} display="flex" alignItems="center">
+                        <WarningAmberOutlinedIcon sx={{color: "orange"}} />
+                        <Typography variant="subtitle2" sx={{color: "orange"}}>
+                            This product will be ignored during checkout since it is out of stock
+                        </Typography>
+                    </Box>
+                )}
             </Box>
-            <Box display="flex" justifyContent="end" sx={{ ml: 3}}>
+            <Box display="flex" justifyContent="end" sx={{ ml: 3 }}>
                 <ProductPrice price={props.product?.price} discountRate={props.product?.discount_rate} />
             </Box>
         </Box>

@@ -15,7 +15,7 @@ import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AuthContext from '../../context/AuthContext';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -42,6 +42,8 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [searchParams, _] = useSearchParams();
+
     const isFormValid = () => {
         return email.trim() && password.trim();
     }
@@ -55,7 +57,11 @@ export default function SignIn() {
     }
 
     const handleSubmit = () => {
-        loginUser(email, password);
+        let loginAdditionalData = {
+            copyCartItemsFrom: localStorage.getItem('cartUuid'),
+            nextDestination: searchParams.get('nextDestination'),
+        };
+        loginUser(email, password, loginAdditionalData);
     };
 
     return (

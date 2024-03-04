@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useState, useContext } from "react";
 import useAxios from "../../utils/useAxios";
 import { Box, Typography, TextField, Button, Alert, Link } from "@mui/material";
@@ -10,6 +10,7 @@ export default function ConfirmSignup() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
+    const [searchParams, _] = useSearchParams();
     const {setAuthTokens, setUser} = useContext(AuthContext);
 
     const location = useLocation();
@@ -29,6 +30,8 @@ export default function ConfirmSignup() {
     };
 
     const sendOTP = async () => {
+        let nextDestination = searchParams.get('nextDestination');
+
         try {
             let response = await api.post('/api/verification/signup-confirmation/', {
                 code: OTP,
@@ -42,7 +45,12 @@ export default function ConfirmSignup() {
                 setUser(jwt_decode(response_data.access));
                 localStorage.setItem("authTokens", JSON.stringify(response_data));
                 localStorage.removeItem("cartUuid");
-                window.location.assign("/");
+
+                if (nextDestination) {
+                    window.location.assign(nextDestination);
+                } else {
+                    window.location.assign("/");
+                }
               }, 1000);
         } catch (error) {
             setError(error.response.data.error);

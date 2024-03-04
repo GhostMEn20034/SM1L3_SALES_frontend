@@ -1,7 +1,10 @@
+import { Box, Typography, Button, Link } from "@mui/material";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { currencySymbol } from "../../utils/consts";
-import { Box, Typography, Button } from "@mui/material";
 
 export default function ProceedToCheckout(props) {
+    const location = useLocation();
+
     return (
         <Box>
             <Box display={"flex"} justifyContent={"center"}>
@@ -10,16 +13,30 @@ export default function ProceedToCheckout(props) {
                 </Typography>
             </Box>
             <Box display={"flex"} justifyContent={"center"} sx={{ mt: 2 }}>
-                <Button variant="contained" size="small"
-                    sx={{
-                        backgroundColor: '#000000',
-                        ":hover": { backgroundColor: "#1f1f1f"},
-                        color: '#D5D507',
-                        borderRadius: "10px",
-                        minWidth: "250px",
-                    }}>
-                    Proceed To Checkout
-                </Button>
+                {props.user ? (
+                    <Button variant="contained" size="small"
+                        sx={{
+                            backgroundColor: '#000000',
+                            ":hover": { backgroundColor: "#1f1f1f" },
+                            color: '#D5D507',
+                            borderRadius: "10px",
+                            minWidth: "250px",
+                        }}>
+                        Proceed To Checkout
+                    </Button>
+                ) : (
+                    <Box>
+                        <Box>
+                            <Typography>To proceed checkout you need to:</Typography>
+                        </Box>
+                        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                            <Typography>
+                                <Link component={RouterLink} underline="hover" to={`/signin?nextDestination=${location.pathname}`}>Sign in</Link> Or <Link component={RouterLink} underline="hover" to={`/signup?nextDestination=${location.pathname}`}>Sign Up</Link>
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                )}
             </Box>
         </Box>
     );

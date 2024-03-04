@@ -2,7 +2,7 @@ import axios from "axios";
 import { createContext, useState, useEffect } from "react";
 import jwt_decode from 'jwt-decode';
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 
 const AuthContext = createContext()
 
@@ -18,15 +18,22 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const baseURL = process.env.REACT_APP_BASE_URL_USERS;
 
-    let loginUser = async (email, password) => {
+    let loginUser = async (email, password, additionalData) => {
+
+        let nextDestination = additionalData?.nextDestination;
 
         try {
+            let loginRequestBody = {
+                email: email,
+                password: password,
+            }
+            if (additionalData?.copyCartItemsFrom) {
+                loginRequestBody.copy_cart_items_from = additionalData.copyCartItemsFrom;
+            }
+
             let response = await axios.post(
                 `${baseURL}/api/auth/token/`,
-                {
-                    email: email,
-                    password: password
-                },
+                loginRequestBody,
                 {
                     headers: {
                         "Content-Type": "application/json"
@@ -41,7 +48,12 @@ export const AuthProvider = ({ children }) => {
                 setUser(jwt_decode(response_data.access));
                 localStorage.setItem("authTokens", JSON.stringify(response_data));
                 localStorage.removeItem("cartUuid");
-                window.location.assign("/");
+
+                if (nextDestination) {
+                    window.location.assign(nextDestination);
+                } else {
+                    window.location.assign("/");
+                }
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -51,12 +63,19 @@ export const AuthProvider = ({ children }) => {
             if (error.response.status === 400) {
                 let token = await error.response.data.token;
                 sessionStorage.setItem("token", token);
-                navigate({
-                    pathname: '/signup/confirm'
-                },
-                {
-                    state: {email: email}
+
+                let searchParams = {};
+                if (nextDestination) {
+                    searchParams.nextDestination = nextDestination;
                 }
+
+                navigate({
+                    pathname: '/signup/confirm',
+                    search: createSearchParams(searchParams).toString()
+                },
+                    {
+                        state: { email: email }
+                    }
                 );
             }
         }
@@ -72,13 +91,15 @@ export const AuthProvider = ({ children }) => {
 
             if (!isExpired) {
                 axios.post(
-                    `${baseURL}/api/auth/token/blacklist/`, 
-                    {refresh: authTokens.refresh},
-                    {headers: {
-                        "Content-Type": "application/json"
-                    }}
-                    )
-            }  
+                    `${baseURL}/api/auth/token/blacklist/`,
+                    { refresh: authTokens.refresh },
+                    {
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }
+                )
+            }
             setAuthTokens(null);
             setUser(null);
             localStorage.removeItem('authTokens');
@@ -86,7 +107,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.log("Unable to logout");
         }
-        
+
     }
 
     let contextData = {
@@ -94,15 +115,15 @@ export const AuthProvider = ({ children }) => {
         loginUser: loginUser,
         logoutUser: logoutUser,
         authTokens: authTokens,
-        setAuthTokens:setAuthTokens,
-        setUser:setUser,
+        setAuthTokens: setAuthTokens,
+        setUser: setUser,
         error: error,
         setError: setError,
     }
 
-    useEffect(()=> {
+    useEffect(() => {
 
-        if(authTokens){
+        if (authTokens) {
             setUser(jwt_decode(authTokens.access));
 
             let token = jwt_decode(authTokens?.refresh);
@@ -124,7 +145,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={contextData}>
-            {loading ? null: children}
+            {loading ? null : children}
         </AuthContext.Provider>
     )
 }

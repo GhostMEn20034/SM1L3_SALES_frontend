@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import GoogleLogin from './GoogleLogin';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -46,8 +46,11 @@ export default function SignUp() {
 
     const navigate = useNavigate();
     const baseURL = process.env.REACT_APP_BASE_URL_USERS;
+    const [searchParams, _] = useSearchParams();
 
     const handleSubmit = async () => {
+        let nextDestination = searchParams.get('nextDestination');
+
         try {
             let requestBody = {
                 first_name: firstName,
@@ -56,7 +59,7 @@ export default function SignUp() {
                 password1: password1,
                 password2: password2,
             };
-            
+
             let copyCartItemsFrom = localStorage.getItem("cartUuid")
 
             if (copyCartItemsFrom) {
@@ -67,7 +70,17 @@ export default function SignUp() {
 
             let response_data = await response.data;
             sessionStorage.setItem("token", response_data.token);
-            navigate({ pathname: '/signup/confirm' }, { state: { "email": email} });
+
+            let queryParams = {};
+            if (nextDestination) {
+                queryParams.nextDestination = nextDestination
+            }
+
+            navigate({
+                pathname: '/signup/confirm',
+                search: createSearchParams(queryParams).toString()
+            }, { state: { "email": email } });
+
         } catch (error) {
             setError(error.response.data.error);
         }
@@ -177,9 +190,9 @@ export default function SignUp() {
                     </Box>
                 </Box>
                 {error && (
-                        <Box sx={{ mt: 2 }}>
-                            <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
-                        </Box>
+                    <Box sx={{ mt: 2 }}>
+                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                    </Box>
                 )}
                 <Divider sx={{ my: 4 }}>
                     <Chip label="OR" />

@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Divider, Link, Paper, Typography, CircularProgress } from "@mui/material";
+import { Box, Divider, Link, Paper, Typography } from "@mui/material";
 
 
 import { currencySymbol } from "../../utils/consts";
 import CartItemList from "../../components/Cart/CartItemList";
 import ProceedToCheckout from "../../components/Cart/ProceedToCheckout";
+import CartEmpty from "../../components/Cart/CartEmpty";
 import UserContext from "../../context/UserContext";
 import useAxios from "../../utils/useAxios";
 
@@ -29,7 +30,7 @@ export default function CartItemListPage() {
 
     const changeCartItemQuantity = async (cartItemId, newQuantity) => {
         try {
-            await api.patch(`/api/carts/${userInfo.cart.cart_uuid}/items/${cartItemId}/`, {quantity: newQuantity});
+            await api.patch(`/api/carts/${userInfo.cart.cart_uuid}/items/${cartItemId}/`, { quantity: newQuantity });
             refreshUserInfo();
         } catch (e) {
             console.log("Something went wrong!");
@@ -72,22 +73,26 @@ export default function CartItemListPage() {
                                     Shopping Cart
                                 </Typography>
                             </Box>
-                            { cartData?.cart_items?.length > 0 && (
-                            <Box sx={{ mb: 2 }}>
-                                <Link component="button" underline={"hover"} onClick={clearCart}>
-                                    <Typography>
-                                        Clear All Items
-                                    </Typography>
-                                </Link>
-                            </Box>
+                            {cartData?.cart_items?.length > 0 && (
+                                <Box sx={{ mb: 2 }}>
+                                    <Link component="button" underline={"hover"} onClick={clearCart}>
+                                        <Typography>
+                                            Clear All Items
+                                        </Typography>
+                                    </Link>
+                                </Box>
                             )}
                             <Divider />
                             <Box>
-                                <CartItemList 
-                                    cartItems={cartData.cart_items ? cartData.cart_items : []} 
-                                    changeCartItemQuantity={changeCartItemQuantity}
-                                    deleteCartItem={deleteCartItem}
-                                />
+                                {cartData.cart_items?.length > 0 ? (
+                                    <CartItemList
+                                        cartItems={cartData.cart_items ? cartData.cart_items : []}
+                                        changeCartItemQuantity={changeCartItemQuantity}
+                                        deleteCartItem={deleteCartItem}
+                                    />
+                                ) : (
+                                    <CartEmpty />
+                                )}
                             </Box>
                             <Box display="flex" justifyContent="end" sx={{ mt: 1 }}>
                                 <Typography variant="h6" sx={{ objectPosition: "right" }}>
@@ -98,7 +103,7 @@ export default function CartItemListPage() {
                     </Box>
                     <Box sx={{ maxWidth: "300px", ml: 5 }}>
                         <Paper sx={{ width: '100%', bgcolor: 'background.paper', padding: 2.5 }}>
-                            <ProceedToCheckout cartItemCount={cartData.cart?.count} total={cartData.cart?.total} />
+                            <ProceedToCheckout cartItemCount={cartData.cart?.count} total={cartData.cart?.total} user={userInfo?.user} />
                         </Paper>
                     </Box>
                 </Box>
