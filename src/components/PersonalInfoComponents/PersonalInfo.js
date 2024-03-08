@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 const style = {
   width: '100%',
   maxWidth: 580,
+  minWidth: 400,
   bgcolor: 'background.paper',
   border: 1,
   borderRadius: "10px",

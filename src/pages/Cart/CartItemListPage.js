@@ -65,7 +65,7 @@ export default function CartItemListPage() {
     return (
         cartData && (
             <Box sx={{ padding: 3 }}>
-                <Box display={"flex"}>
+                <Box display={"flex"} justifyContent="center">
                     <Box sx={{ minWidth: "850px", maxWidth: "1200px" }}>
                         <Paper sx={{ px: 3, py: 2 }}>
                             <Box sx={{ mb: 1 }}>
@@ -100,6 +100,12 @@ export default function CartItemListPage() {
                                 </Typography>
                             </Box>
                         </Paper>
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="caption">
+                                The price and availability of items at SMILE Sales are subject to change. <br />
+                                The Cart is a temporary place to store a list of your items and reflects each item's most recent price.
+                            </Typography>
+                        </Box>
                     </Box>
                     <Box sx={{ maxWidth: "300px", ml: 5 }}>
                         <Paper sx={{ width: '100%', bgcolor: 'background.paper', padding: 2.5 }}>

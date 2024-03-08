@@ -14,12 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { SvgIcon } from '@mui/material';
 import { ReactComponent as SmileSalesLogo } from '../smile.svg';
-import { Search, SearchIconWrapper, StyledInputBase } from './CommonComponents/SearchBar';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchAutocomplete from './Search/SearchAutocomplete';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Link from '@mui/material/Link';
-import { Link as RouterLink} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import UserContext from '../context/UserContext';
 
@@ -32,7 +31,7 @@ const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 function AppBarMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  
+
   const { userInfo } = useContext(UserContext);
   const { user, logoutUser } = useContext(AuthContext);
 
@@ -76,7 +75,7 @@ function AppBarMenu() {
         <AppBar position="fixed" color='primary' sx={{ marginBottom: 100 }}>
           <Container maxWidth="xl">
             <Toolbar disableGutters variant='dense' style={{ height: 70 }}>
-              <Link  underline="none" component={RouterLink} to="/">
+              <Link underline="none" component={RouterLink} to="/">
                 <SvgIcon component={SmileSalesLogo} inheritViewBox
                   sx={{ width: "120px", height: "70px", ":hover": { "cursor": "pointer" } }}
                 />
@@ -88,7 +87,9 @@ function AppBarMenu() {
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
                   onClick={handleOpenNavMenu}
-                  color="inherit"
+                  sx={{
+                    color: "#D5D507",
+                  }}
                 >
                   <MenuIcon />
                 </IconButton>
@@ -110,23 +111,23 @@ function AppBarMenu() {
                     display: { xs: 'block', md: 'none' },
                   }}
                 >
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
+                  {pages.map((page, index) => (
+                    <Link underline="none" key={page} component={RouterLink} to={setting_links[index]}>
+                      <MenuItem key={page} onClick={handleCloseNavMenu}>
+                        <Typography textAlign="center" sx={{ color: '#D5D507' }}>{page}</Typography>
+                      </MenuItem>
+                    </Link>
                   ))}
+                  <Link underline="none" component={RouterLink} to='/cart'>
+                    <MenuItem key={"Cart"} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center" sx={{ color: '#D5D507' }}>Cart</Typography>
+                    </MenuItem>
+                  </Link>
                 </Menu>
+
               </Box>
               <Box sx={{ mr: 5, ml: 5, }}>
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
-                  />
-                </Search>
+                <SearchAutocomplete />
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                 {pages.map((page, index) => (
@@ -160,7 +161,7 @@ function AppBarMenu() {
                   <>
                     <Tooltip title="Open settings">
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        { userInfo?.user && (<Avatar alt={`${userInfo.user.first_name} ${userInfo.user.last_name}`} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />) }
+                        {userInfo?.user && (<Avatar alt={`${userInfo.user.first_name} ${userInfo.user.last_name}`} src="/static/images/avatar/2.jpg" sx={{ backgroundColor: "#D5D507" }} />)}
                       </IconButton>
                     </Tooltip>
                     <Menu
@@ -186,9 +187,9 @@ function AppBarMenu() {
                           </MenuItem>
                         </Link>
                       ))}
-                        <MenuItem key="logout" onClick={logoutUser}>
-                          <Typography textAlign="center" color="#D5D507">Logout</Typography>
-                        </MenuItem>
+                      <MenuItem key="logout" onClick={logoutUser}>
+                        <Typography textAlign="center" color="#D5D507">Logout</Typography>
+                      </MenuItem>
                     </Menu>
                   </>
                 ) : (
@@ -206,7 +207,7 @@ function AppBarMenu() {
             </Toolbar>
           </Container>
         </AppBar>
-      </ThemeProvider>
+      </ThemeProvider >
       <Box className="Offset" sx={{ height: "70px" }}></Box>
     </>
   );

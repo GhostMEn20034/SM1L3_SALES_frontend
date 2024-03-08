@@ -59,7 +59,7 @@ export default function AddressesList() {
                 {open && choosenID && (
                     <DeleteAddress open={open} setOpen={setOpen} onSubmit={handleSubmitRemoval} address={addresses.find(address => address.id === choosenID)} />
                 )}
-                <Grid container gap={4}>
+                <Grid container gap={2}>
                     <Grid item xs={3.15}>
                         <Link to="add" style={{ textDecoration: 'none' }}>
                             <Paper sx={{ height: "250px", width: "300px", borderRadius: "10px" }} elevation={3}>

@@ -46,7 +46,7 @@ const useAxios = (microserviceBaseURL="") => {
         }
 
         try {
-            let response = await axios.post(`${baseUrl}/api/auth/token/refresh/`, {
+            let response = await axios.post(`${process.env.REACT_APP_BASE_URL_USERS}/api/auth/token/refresh/`, {
                 refresh: authTokens.refresh,
             });
         
