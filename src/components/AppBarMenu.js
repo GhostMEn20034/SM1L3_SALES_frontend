@@ -126,7 +126,7 @@ function AppBarMenu() {
                 </Menu>
 
               </Box>
-              <Box sx={{ mr: 5, ml: 5, }}>
+              <Box sx={{ mr: 5, ml: 5, width: "40%", minWidth: "250px"}}>
                 <SearchAutocomplete />
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

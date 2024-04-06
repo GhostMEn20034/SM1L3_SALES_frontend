@@ -31,9 +31,9 @@ export default function CartItemListPage() {
     const changeCartItemQuantity = async (cartItemId, newQuantity) => {
         try {
             await api.patch(`/api/carts/${userInfo.cart.cart_uuid}/items/${cartItemId}/`, { quantity: newQuantity });
-            refreshUserInfo();
+            refreshUserInfo()
         } catch (e) {
-            console.log("Something went wrong!");
+            console.log("Something Went Wrong");
         }
     };
 

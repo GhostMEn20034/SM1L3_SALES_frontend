@@ -6,30 +6,24 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, Paper, Autocomplete, IconButton } from '@mui/material';
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import useAxios from '../../utils/useAxios';
+import { useNavigate, createSearchParams, useSearchParams, useLocation } from 'react-router-dom';
 
-
-function PaperComponent(props) {
-    return <Paper {...props} sx={{ width: 470 }} />
-}
 
 const SearchAutocomplete = memo(function SearchAutocomplete() {
-
+    const [searchParams, setSearchParams] = useSearchParams();
     const controllerRef = useRef();
     const [search, setSearch] = useState(null);
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(searchParams.get("q") || '');
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
 
     const api = useAxios('products');
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const loading = open && options.length === 0;
 
-    console.log(inputValue);
-    console.log(search);
-
-
-
-    const getOptions = async (query='') => {
+    const getOptions = async (query = inputValue) => {
 
         if (controllerRef.current) {
             controllerRef.current.abort();
@@ -50,7 +44,6 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
             setOptions(response.data);
 
         } catch (e) {
-            console.log("Something Went Wrong");
         }
     };
 
@@ -60,8 +53,6 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
     };
 
     useEffect(() => {
-
-
         if (!loading) {
             return undefined;
         }
@@ -69,28 +60,64 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
 
     }, [open]);
 
+    const handleSubmit = (query) => {
+        let querySearch = inputValue || query;
+
+        document.activeElement.blur();
+
+        if (querySearch?.length < 1) {
+            navigate("/");
+        } else {
+            let searchParams = createSearchParams({
+                q: querySearch,
+                page: 1,
+            }).toString();
+
+            if (location.pathname === '/s') {
+                navigate({
+                    pathname: "s",
+                    search: searchParams
+                });
+            } else {
+                navigate({
+                    pathname: "s",
+                    search: createSearchParams({ q: querySearch }).toString()
+                });
+            }
+
+        }
+    };
+
+    const handleChangeSearch = (newValue) => {
+        setSearch(newValue);
+        handleSubmit(newValue?.name);
+    };
+
     return (
-        <Box display="flex">
+        <Box display="flex" sx={{ width: "100%" }}>
             <Autocomplete
                 open={open}
-                onOpen={() => (setOpen(true))}
+                onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
                 id="custom-input-demo"
                 options={options}
                 value={search}
                 freeSolo
-                onChange={(e, newValue) => setSearch(newValue)}
+                onChange={(e, newValue) => handleChangeSearch(newValue)}
                 onBlur={() => setSearch((prevValue) => prevValue)}
                 inputValue={inputValue}
                 onInputChange={(e, newValue) => handleInputValueChange(newValue)}
                 blurOnSelect
+                clearOnBlur={false}
+                clearOnEscape={false}
                 getOptionLabel={(option) => option.name ? option.name : ''}
+                filterOptions={(x) => x}
                 isOptionEqualToValue={(option, value) => {
                     if (!value) return false;
                     return option.name === value.name;
                 }}
                 renderInput={(params) => (
-                    <Search ref={params.InputProps.ref}>
+                    <Search ref={params.InputProps.ref} sx={{ display: "flex" }}>
                         <StyledInputBase
                             type="text"
                             placeholder='Search...'
@@ -98,15 +125,19 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
                                 ...params.inputProps,
                             }}
                         />
+                        <Box sx={{ ml: 1 }}>
+                            <IconButton type='contained' onClick={() => handleSubmit()}>
+                                <SearchIcon sx={{ color: '#D5D507' }} />
+                            </IconButton>
+                        </Box>
                     </Search>
                 )}
-                clearOnBlur={false}
                 autoComplete
-                PaperComponent={PaperComponent}
+                PaperComponent={props => <Paper {...props} width={"100%"} />}
                 ListboxProps={{
                     style: {
-                        maxHeight: "390px",
-                        overflow: 'hidden'  // Hides the scrollbar
+                        overflow: 'hidden',  // Hides the scrollbar
+                        minHeight: 36 * (options?.length ? options.length : 0),
                     }
                 }}
                 renderOption={(props, option, { inputValue }) => {
@@ -116,7 +147,7 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
                     return (
                         <li {...props}>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{color: "#D5D507", display: "flex", alignItems: "center"}}>
+                                <div style={{ color: "#D5D507", display: "flex", alignItems: "center" }}>
                                     {option.trend_search_term && <TrendingUpOutlinedIcon style={{ marginRight: 8 }} />}
                                 </div>
                                 <div style={{ color: "#D5D507" }}>
@@ -135,14 +166,10 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
                         </li>
                     );
                 }}
+                sx={{ width: "100%" }}
             />
-            <Box sx={{ ml: 1 }}>
-                <IconButton type='contained'>
-                    <SearchIcon sx={{ color: '#D5D507' }} />
-                </IconButton>
-            </Box>
         </Box>
     );
-})
+});
 
 export default SearchAutocomplete;

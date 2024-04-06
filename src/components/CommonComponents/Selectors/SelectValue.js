@@ -17,7 +17,7 @@ export default function SelectValue({ value, setValue, menuItems, size, label, d
     const selectorSize = size ? size : 'small';
 
     return (
-        <FormControl sx={styles} size="small" disabled={disabledInput} error={error?.isError}>
+        <FormControl sx={styles} size={selectorSize} disabled={disabledInput} error={error?.isError}>
             <InputLabel id="demo-select-small-label">{label}</InputLabel>
             <Select
                 labelId="demo-select-small-label"

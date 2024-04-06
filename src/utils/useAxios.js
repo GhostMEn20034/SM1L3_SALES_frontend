@@ -5,8 +5,8 @@ import { useContext } from 'react'
 import AuthContext from '../context/AuthContext'
 
 
-const useAxios = (microserviceBaseURL="") => {
-    const {logoutUser, authTokens, setUser, setAuthTokens} = useContext(AuthContext)
+const useAxios = (microserviceBaseURL = "") => {
+    const { logoutUser, authTokens, setUser, setAuthTokens } = useContext(AuthContext)
 
     let baseUrl;
 
@@ -14,15 +14,15 @@ const useAxios = (microserviceBaseURL="") => {
         case "users":
             baseUrl = process.env.REACT_APP_BASE_URL_USERS;
             break;
-        
+
         case "products":
             baseUrl = process.env.REACT_APP_BASE_URL_PRODUCTS;
             break;
-        
+
         case "orders":
             baseUrl = process.env.REACT_APP_BASE_URL_ORDERS;
             break;
-        
+
         default:
             baseUrl = process.env.REACT_APP_BASE_URL_USERS;
     }
@@ -31,8 +31,9 @@ const useAxios = (microserviceBaseURL="") => {
         baseURL: baseUrl,
     });
 
+
     axiosInstance.interceptors.request.use(async req => {
-    
+
         const user = authTokens ? jwt_decode(authTokens?.access) : null;
 
         if (!user) {
@@ -40,7 +41,8 @@ const useAxios = (microserviceBaseURL="") => {
         }
 
         let isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
-        if(!isExpired) {
+
+        if (!isExpired) {
             req.headers.Authorization = `Bearer ${authTokens?.access}`;
             return req
         }
@@ -49,19 +51,20 @@ const useAxios = (microserviceBaseURL="") => {
             let response = await axios.post(`${process.env.REACT_APP_BASE_URL_USERS}/api/auth/token/refresh/`, {
                 refresh: authTokens.refresh,
             });
-        
+
             localStorage.setItem('authTokens', JSON.stringify(response.data))
-            
-            setAuthTokens(response.data)
-            setUser(jwt_decode(response.data.access))
-            
+
+            setAuthTokens(response.data);
+            setUser(jwt_decode(response.data.access));
+
             req.headers.Authorization = `Bearer ${response.data.access}`;
             return req
         } catch (error) {
             if (error.response.status === 401) {
                 logoutUser();
                 window.location.assign("/");
-                return Promise.reject("Session Expired")
+                return Promise.reject("Session Expired");
+
             } else {
                 logoutUser();
                 return Promise.reject("Entered invalid token");
@@ -69,7 +72,7 @@ const useAxios = (microserviceBaseURL="") => {
         }
 
     })
-    
+
 
     // response interceptor
     return axiosInstance

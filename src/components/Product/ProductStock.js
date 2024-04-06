@@ -21,8 +21,10 @@ export default function ProductStock (props) {
         textToRender = `In Stock`;
     }
 
+    let textVariant = props.textVariant ? props.textVariant : "subtitle2"
+
     return (
-        <Typography component="span" variant="subtitle2" sx={{...additionalStyles }}>
+        <Typography component="span" variant={textVariant} sx={{...additionalStyles }}>
             {textToRender}
         </Typography>
     );
