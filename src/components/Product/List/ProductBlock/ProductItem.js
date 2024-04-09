@@ -1,24 +1,50 @@
-import { Box, Button, Typography, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import PriceBox from "./PriceBox";
 import ProductStock from '../../ProductStock';
+import { useState, memo } from "react";
 
-export default function ProductItem(props) {
-    let allowToAddToCart = (props.stock > 0) || (props.inCartCount < props.max_order_qty);
+const ProductItem = memo(function ProductItem(props) {
+    const [addToCartloading, setAddToCartLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    let allowToAddToCart = (props.inCartCount < props.max_order_qty && props.inCartCount < props.stock);
+
+    const onAddProductToCart = async (product_id, inCartCount) => {
+        setAddToCartLoading(true);
+        try {
+            await props.addProductToCart(product_id, inCartCount + 1);
+        } catch (err) {
+            let data = err.response.data;
+            if ("error" in data) {
+                setErrorMessage(data?.error);
+            }
+        }
+        setAddToCartLoading(false);
+    };
+
+    const onDeleteProductFromCart = async (product_id) => {
+        try {
+            await props.deleteProductFromCart(product_id);
+        } catch {
+            setErrorMessage("Unable to delete a product from the cart");
+        }
+    };
 
     return (
         <Box display="flex">
-            <Box className="ImageSection" sx={{ml: 2, mr: 5, minWidth: 200 }}
+            <Box className="ImageSection" sx={{ ml: 2, mr: 5, minWidth: 200 }}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                >
-                    <img
-                        src={props.image}
-                        alt={props.name}
-                        height={150}
-                        style={{ objectFit: 'scale-down' }}
-                    />
+            >
+                <img
+                    src={props.image}
+                    alt={props.name}
+                    height={150}
+                    style={{ objectFit: 'scale-down' }}
+                />
             </Box>
             <Box className="ProductInfoSection">
                 <Box className="TitleBox">
@@ -45,10 +71,11 @@ export default function ProductItem(props) {
                     <ProductStock stock={props.stock} />
                 </Box>
                 {props.stock > 0 && (
-                    <Box className='CartBox' sx={{mt: 1}}>
+                    <Box className='CartBox' sx={{ mt: 1 }}>
                         <Box>
-                            <Button
+                            <LoadingButton
                                 variant="contained"
+                                loading={addToCartloading}
                                 disabled={!allowToAddToCart}
                                 sx={{
                                     backgroundColor: '#ebeb05',
@@ -57,23 +84,35 @@ export default function ProductItem(props) {
                                     borderRadius: "15px",
                                 }}
                                 size="small"
-                                >
+                                onClick={async () => await onAddProductToCart(props.id, props.inCartCount)}
+                            >
                                 Add To Cart
-                            </Button>
+                            </LoadingButton>
                         </Box>
                         {props.inCartCount > 0 && (
                             <Box display="flex" sx={{ mt: 1 }}>
                                 <Typography variant="subtitle2">
                                     <b>{props.inCartCount} in cart</b>
                                 </Typography>
-                                <Typography variant="subtitle2" sx={{ml: 0.5}}>
+                                <Typography variant="subtitle2" sx={{ ml: 0.5 }}>
                                     -
                                 </Typography>
-                                <Link component="button" underline={"hover"} sx={{ml: 0.5}}>
+                                <Link
+                                    component="button"
+                                    underline={"hover"} sx={{ ml: 0.5 }}
+                                    onClick={() => onDeleteProductFromCart(props.id)}
+                                >
                                     <Typography variant="subtitle2">
                                         Remove
                                     </Typography>
                                 </Link>
+                            </Box>
+                        )}
+                        {errorMessage && (
+                            <Box>
+                                <Typography variant="body2" sx={{ color: "red" }}>
+                                    {errorMessage}
+                                </Typography>
                             </Box>
                         )}
                     </Box>
@@ -81,4 +120,6 @@ export default function ProductItem(props) {
             </Box>
         </Box>
     )
-}
+});
+
+export default ProductItem;

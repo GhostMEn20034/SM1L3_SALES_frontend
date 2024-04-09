@@ -65,7 +65,7 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
 
         document.activeElement.blur();
 
-        if (querySearch?.length < 1) {
+        if (!querySearch) {
             navigate("/");
         } else {
             let searchParams = createSearchParams({

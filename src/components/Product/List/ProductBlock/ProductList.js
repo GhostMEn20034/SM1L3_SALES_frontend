@@ -25,8 +25,11 @@ export default function ProductList(props) {
                         discounted_price={item.discounted_price}
                         discount_percentage={item.discount_percentage}
                         stock={item.stock}
+                        max_order_qty={item.max_order_qty}
                         image={item.image}
                         inCartCount={getInCartCount(item._id)}
+                        addProductToCart={props.addProductToCart}
+                        deleteProductFromCart={props.deleteProductFromCart}
                     />
                 </Box>
             ))}

@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { Box, Button, Typography, Collapse } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import SmallTextField from "../../../CommonComponents/Inputs/SmallTextField";
 import ExpandMore from "../../../CommonComponents/ExpandMore";
@@ -66,21 +67,38 @@ export default function PriceRangeFacet(props) {
                             }}
                         />
                     </Box>
-                    <Button
-                        sx={{
-                            backgroundColor: '#ebeb05',
-                            ":hover": { backgroundColor: "#dbdb04" },
-                            color: '#000000',
-                            borderRadius: "7.5",
-                            ml: 1,
-                            minWidth: 40,
-                        }}
-                        size="small"
-                        disabled={(!props.minPrice || !props.maxPrice) || props.minPrice > props.maxPrice}
-                        onClick={props.onSubmit}
-                    >
-                        OK
-                    </Button>
+                    <Box>
+                        <Button
+                            sx={{
+                                backgroundColor: '#ebeb05',
+                                ":hover": { backgroundColor: "#dbdb04" },
+                                color: '#000000',
+                                borderRadius: "7.5",
+                                ml: 1,
+                                minWidth: 40,
+                            }}
+                            size="small"
+                            disabled={(!props.minPrice || !props.maxPrice) || props.minPrice > props.maxPrice}
+                            onClick={props.onSubmit}
+                        >
+                            OK
+                        </Button>
+                    </Box>
+                </Box>
+                <Box>
+                    {(props.queryMinPrice || props.queryMaxPrice) && (
+                        <Box sx={{ mt: 0.5 }}>
+                            <Button
+                                size="small"
+                                variant="contained"
+                                startIcon={<CancelOutlinedIcon fontSize="small" />}
+                                onClick={props.onPriceRangeReset}
+                                sx={{py: "1px", px: "7.5px"}}
+                            >
+                                Clear
+                            </Button>
+                        </Box>
+                    )}
                 </Box>
             </Collapse>
 

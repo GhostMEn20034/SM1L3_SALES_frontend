@@ -1,5 +1,5 @@
-import { Box, Container, Typography, LinearProgress, Button, Divider } from "@mui/material";
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { Box, Container, Typography, LinearProgress, Divider } from "@mui/material";
+
 import { useEffect, useState, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -18,7 +18,7 @@ import CategoryFacet from "../../components/Product/List/FacetBlock/CategoryFace
 import PriceRangeFacet from "../../components/Product/List/FacetBlock/PriceRange";
 
 export default function ProductListPage() {
-    const { userInfo, refreshUserInfo } = useContext(UserContext);
+    const { userInfo, refreshCartData } = useContext(UserContext);
     const [searchParams, setSearchParams] = useSearchParams();
 
 
@@ -45,6 +45,7 @@ export default function ProductListPage() {
     const chosenFacets = searchParams.get("chosenFacets");
     const decodedChosenFacets = decodeChosenFacets(chosenFacets);
 
+    const apiUsers = useAxios('users');
     const apiProducts = useAxios('products');
 
     const insertFacetObjectToChosenFacets = ({code, value, unit}) => {
@@ -64,6 +65,19 @@ export default function ProductListPage() {
         });
         newSearchParams = deleteQueryParams(newSearchParams, ['minPrice', 'maxPrice']);
         setSearchParams(newSearchParams);
+    };
+
+    const addProductToCart = async (product_id, inCartCount) => {
+        await apiUsers.post(`/api/carts/${userInfo?.cart?.cart_uuid}/items/`, {
+            product_id,
+            quantity: inCartCount,
+        });
+        refreshCartData();
+    };
+
+    const deleteProductFromCart = async (product_id) => {
+        await apiUsers.delete(`/api/carts/${userInfo?.cart?.cart_uuid}/items/${product_id}/`);
+        refreshCartData();
     };
 
     const getProducts = async () => {
@@ -170,6 +184,8 @@ export default function ProductListPage() {
                                         maxPrice={maxPrice}
                                         setMinPrice={setMinPrice}
                                         setMaxPrice={setMaxPrice}
+                                        queryMaxPrice={queryMaxPrice}
+                                        queryMinPrice={queryMinPrice}
                                         onSubmit={() =>
                                             setSearchParams(changeQueryParams(
                                                 searchParams,
@@ -180,21 +196,10 @@ export default function ProductListPage() {
                                                 },
                                             ))
                                         }
+                                        onPriceRangeReset={() => setSearchParams(
+                                            deleteQueryParams(searchParams, ['minPrice', 'maxPrice', 'page'])
+                                        )}
                                     />
-                                    {(queryMinPrice || queryMaxPrice) && (
-                                        <Box sx={{ mt: 0.5 }}>
-                                            <Button
-                                                size="small"
-                                                variant="contained"
-                                                startIcon={<CancelOutlinedIcon fontSize="small" />}
-                                                onClick={() => setSearchParams(
-                                                    deleteQueryParams(searchParams, ['minPrice', 'maxPrice', 'page'])
-                                                )}
-                                            >
-                                                Clear
-                                            </Button>
-                                        </Box>
-                                    )}
                                 </Box>
                                 <Box sx={{ mt: 1 }}>
                                     <Divider />
@@ -225,7 +230,12 @@ export default function ProductListPage() {
                                     </Typography>
                                 </Box>
                                 <Box>
-                                    <ProductList items={productList} cartItems={userInfo?.cart?.items} />
+                                    <ProductList 
+                                        items={productList} 
+                                        cartItems={userInfo?.cart?.items}
+                                        addProductToCart={addProductToCart}
+                                        deleteProductFromCart={deleteProductFromCart}
+                                    />
                                     <Box display="flex" alignItems="center" justifyContent="center" sx={{ my: 3 }}>
                                         <CustomPagination
                                             count={pageCount}
