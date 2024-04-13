@@ -1,12 +1,14 @@
-import { Box, Container, Typography, LinearProgress, Divider } from "@mui/material";
+import { Box, Container, Typography, LinearProgress, Divider, Link } from "@mui/material";
 
 import { useEffect, useState, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import CustomPagination from "../../components/CommonComponents/Navigation/Pagination";
 import { changeQueryParams, deleteQueryParams } from "../../utils/urlParams/changeUrlParams";
-import { encodeChosenFacets, decodeChosenFacets, insertFacetValueToChosenFacets } from "../../utils/productFiltering/chosenFacetsServices";
-
+import {
+    encodeChosenFacets, decodeChosenFacets,
+    insertFacetValueToChosenFacets, clearChosenFacetCode
+} from "../../utils/productFiltering/chosenFacetsServices";
 
 import UserContext from "../../context/UserContext";
 import ProductList from "../../components/Product/List/ProductBlock/ProductList";
@@ -21,7 +23,6 @@ export default function ProductListPage() {
     const { userInfo, refreshCartData } = useContext(UserContext);
     const [searchParams, setSearchParams] = useSearchParams();
 
-
     const [pageSize, setPageSize] = useState(20);
     const [pageCount, setPageCount] = useState(1);
     const [itemsCount, setItemsCount] = useState(20);
@@ -33,6 +34,7 @@ export default function ProductListPage() {
     const [facetsLoading, setFacetsLoading] = useState(false);
     const [productList, setProductList] = useState([]);
     const [facetList, setFacetList] = useState([]);
+    const [facetCodeToNameMappings, setFacetCodeToNameMappings] = useState({});
     const [categories, setCategories] = useState({});
 
     const querySearch = searchParams.get("q") || '';
@@ -47,10 +49,20 @@ export default function ProductListPage() {
 
     const apiUsers = useAxios('users');
     const apiProducts = useAxios('products');
+    const navigate = useNavigate();
 
-    const insertFacetObjectToChosenFacets = ({code, value, unit}) => {
+    const insertFacetObjectToChosenFacets = ({ code, value, unit }) => {
         let facetGroups = decodedChosenFacets ? decodedChosenFacets : {};
-        let newChosenFacets = insertFacetValueToChosenFacets(facetGroups, {code, value, unit});
+        let newChosenFacets = insertFacetValueToChosenFacets(facetGroups, { code, value, unit });
+        let newSearchParams = changeQueryParams(searchParams, {
+            chosenFacets: encodeChosenFacets(newChosenFacets),
+            page: 1,
+        });
+        setSearchParams(newSearchParams);
+    };
+
+    const deleteChosenFacetGroup = (code) => {
+        let newChosenFacets = clearChosenFacetCode(decodedChosenFacets, code);
         let newSearchParams = changeQueryParams(searchParams, {
             chosenFacets: encodeChosenFacets(newChosenFacets),
             page: 1,
@@ -63,7 +75,7 @@ export default function ProductListPage() {
             category: categoryId,
             page: 1,
         });
-        newSearchParams = deleteQueryParams(newSearchParams, ['minPrice', 'maxPrice']);
+        newSearchParams = deleteQueryParams(newSearchParams, ['minPrice', 'maxPrice', 'chosenFacets']);
         setSearchParams(newSearchParams);
     };
 
@@ -124,8 +136,9 @@ export default function ProductListPage() {
         try {
             let response = await apiProducts.get('/api/v1/products/facet-values', { params: params });
             let data = await response.data;
-            setFacetList(data?.facet_values);
-            setCategories(data?.categories);
+            setFacetList(data.facet_values);
+            setCategories(data.categories);
+            setFacetCodeToNameMappings(data.facet_code_to_name_mappings)
             if (!queryMinPrice) {
                 setMinPrice(0 || data?.price_range?._id?.min);
             }
@@ -160,6 +173,10 @@ export default function ProductListPage() {
                     sortOption={sortOption}
                     setSortOption={(value) => setSearchParams(changeQueryParams(searchParams, { 'sortOption': value }))}
                     querySearch={querySearch}
+
+                    chosenFacets={decodedChosenFacets}
+                    facetCodeToNameMappings={facetCodeToNameMappings}
+                    insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}
                 />
             </Box>
             <Box sx={{ mx: 1.5 }}>
@@ -209,54 +226,83 @@ export default function ProductListPage() {
                                         facets={facetList}
                                         chosenFacets={decodedChosenFacets}
                                         insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}
+                                        deleteChosenFacetGroup={deleteChosenFacetGroup}
                                     />
                                 </Box>
                             </Box>
                         )}
                     </Container>
-                    <Container disableGutters maxWidth='xl' className="ProductListContainer" sx={{ml: 2}}>
+                    <Container disableGutters maxWidth='xl' className="ProductListContainer" sx={{ ml: 2 }}>
                         {productsLoading ? (
                             <Box sx={{ mt: 2 }}>
                                 <LinearProgress />
                             </Box>
                         ) : (
-                            <Box>
+                            productList.length > 0 ? (
                                 <Box>
-                                    <Typography variant="h6">
-                                        <b>Results</b>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Check each product page for other buying options.
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                    <ProductList 
-                                        items={productList} 
-                                        cartItems={userInfo?.cart?.items}
-                                        addProductToCart={addProductToCart}
-                                        deleteProductFromCart={deleteProductFromCart}
-                                    />
-                                    <Box display="flex" alignItems="center" justifyContent="center" sx={{ my: 3 }}>
-                                        <CustomPagination
-                                            count={pageCount}
-                                            page={page}
-                                            onChange={(_, value) => {
-                                                setSearchParams(changeQueryParams(
-                                                    searchParams,
-                                                    { 'page': value }
-                                                ));
-                                                window.scrollTo({
-                                                    top: 0,
-                                                    behavior: 'instant',
-                                                });
-                                            }}
-                                            variant="outlined"
-                                            shape="rounded"
-                                            size="large"
+                                    <Box>
+                                        <Typography variant="h6">
+                                            <b>Results</b>
+                                        </Typography>
+                                        <Typography variant="subtitle2">
+                                            Check each product page for other buying options.
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <ProductList
+                                            items={productList}
+                                            cartItems={userInfo?.cart?.items}
+                                            addProductToCart={addProductToCart}
+                                            deleteProductFromCart={deleteProductFromCart}
                                         />
+                                        <Box display="flex" alignItems="center" justifyContent="center" sx={{ my: 3 }}>
+                                            <CustomPagination
+                                                count={pageCount}
+                                                page={page}
+                                                onChange={(_, value) => {
+                                                    setSearchParams(changeQueryParams(
+                                                        searchParams,
+                                                        { 'page': value }
+                                                    ));
+                                                    window.scrollTo({
+                                                        top: 0,
+                                                        behavior: 'instant',
+                                                    });
+                                                }}
+                                                variant="outlined"
+                                                shape="rounded"
+                                                size="large"
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
-                            </Box>
+                            ) : (
+                                <Box>
+                                    <Box>
+                                        <Typography variant="h6">
+                                            Oops! No matches were found for the specified filters
+                                        </Typography>
+                                    </Box>
+                                    <Box display="flex">
+                                        <Box sx={{mr: 0.5}}>
+                                            <Typography variant="subtitle2">
+                                                To get some results you can
+                                            </Typography>
+                                        </Box>
+                                        <Box>
+                                            <Link
+                                                component="button"
+                                                underline={"hover"}
+                                                onClick={() => navigate(-1)}
+                                            >
+                                                <Typography variant="subtitle2">
+                                                    Go Back
+                                                </Typography>
+                                            </Link>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            )
                         )}
                     </Container>
                 </Box>

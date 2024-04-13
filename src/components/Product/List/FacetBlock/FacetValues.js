@@ -11,18 +11,31 @@ export default function FacetValues(props) {
     const handleClickSeeMore = () => {
         setShowAll(!showAll);
     };
-    
+
     return (
         <Box>
             <Box>
                 {slicedValues.map((facetValue, i) => (
-                    <Box display="flex" key={i} alignItems="center" padding={0}>
+                    <Box
+                        display="flex"
+                        key={i}
+                        alignItems="center"
+                        padding={0}
+                        sx={{
+                            width: 'fit-content',
+                            maxWidth: "100%",
+                            ":hover": {
+                                "color": "#0073c4",
+                                "cursor": "pointer"
+                            }
+                        }}
+                        onClick={() => props.insertFacetObjectToChosenFacets(
+                            { "code": props.code, value: facetValue.value, unit: facetValue.unit }
+                        )}
+                    >
                         <Checkbox
                             checked={isFacetValueChecked(
                                 props.chosenFacets,
-                                { "code": props.code, value: facetValue.value, unit: facetValue.unit }
-                            )}
-                            onChange={() => props.insertFacetObjectToChosenFacets(
                                 { "code": props.code, value: facetValue.value, unit: facetValue.unit }
                             )}
                             size="small" sx={{ padding: 0.2, margin: "0px" }}

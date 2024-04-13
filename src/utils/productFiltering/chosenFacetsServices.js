@@ -1,3 +1,5 @@
+import { isObject } from "../dataTypeUtils/objectUtils";
+
 export const decodeChosenFacets = (encodedFacets) => {
     /**
      * Decodes base 64 encoded string with chosen by the user facets.
@@ -97,3 +99,27 @@ export const deleteChosenFacetsCode = (chosenFacets, code) => {
 
     return clonedChosenFacets;
 };
+
+
+export const clearChosenFacetCode = (chosenFacets, code) => {
+    if (!chosenFacets) {
+        return null;
+    }
+
+    let clonedChosenFacets = structuredClone(chosenFacets);
+
+    if (code in chosenFacets) {
+        delete clonedChosenFacets[code];
+    }
+
+    return clonedChosenFacets;
+};
+
+export const getDisplayValue = (value, unit) => {
+    if (isObject(value)) {
+        let joinedValue = Object.values(value).join(" x ");
+        return joinedValue + (unit ? ` ${unit}` : "");
+    }
+
+    return value + (unit ? ` ${unit}` : "");
+}

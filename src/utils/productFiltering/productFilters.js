@@ -16,7 +16,7 @@ class ProductFilters {
     // Get all filter parameters
     getFilters() {
         return {
-            q: this.querySearch,
+            q: this.querySearch?.length > 0 ? this.querySearch : null,
             category: this.category,
             min_price: this.priceMin,
             max_price: this.priceMax,

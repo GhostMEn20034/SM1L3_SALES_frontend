@@ -9,6 +9,7 @@ export default function FacetList(props) {
                 <FacetItem facet={facet}
                     chosenFacets={props.chosenFacets}
                     insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
+                    deleteChosenFacetGroup={props.deleteChosenFacetGroup}
                 />
             </Box>
         ))

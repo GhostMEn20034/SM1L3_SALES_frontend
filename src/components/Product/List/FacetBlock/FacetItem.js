@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -39,7 +40,20 @@ export default function FacetItem(props) {
                         </HtmlTooltip>
                     </Box>
                 )}
-                <Box marginLeft="auto">
+                <Box marginLeft="auto" display="flex" alignItems="center">
+                    {props?.chosenFacets && props.facet?.code in props?.chosenFacets && (
+                        <Box marginRight={1.2}>
+                            <Link
+                                component="button"
+                                underline={"hover"} sx={{ ml: 0.5 }}
+                                onClick={() => props.deleteChosenFacetGroup(props.facet?.code)}
+                            >
+                                <Typography variant="subtitle2">
+                                    Clear
+                                </Typography>
+                            </Link>
+                        </Box>
+                    )}
                     <ExpandMore
                         expand={expanded}
                         onClick={handleExpandClick}
@@ -59,12 +73,11 @@ export default function FacetItem(props) {
                         chosenFacets={props.chosenFacets}
                         insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
                     />
-                        
                 </Box>
-            </Collapse>
+            </Collapse >
             <Box sx={{ mt: 1 }}>
                 <Divider />
             </Box>
-        </Box>
+        </Box >
     );
 }

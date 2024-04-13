@@ -1,6 +1,9 @@
 import { Box, Typography, Paper } from "@mui/material";
 import SelectValue from "../../CommonComponents/Selectors/SelectValue";
 import { sortOptionMappings } from "../../../utils/consts";
+import ChosenFacetsList from "./ChosenFacetsList";
+
+import { isEmpty } from "../../../utils/dataTypeUtils/objectUtils";
 
 export default function ResultsSummaryBar(props) {
     const getCurrentOffset = () => {
@@ -14,29 +17,38 @@ export default function ResultsSummaryBar(props) {
     let resultsSummaryText = `${currentOffset.start}-${currentOffset.end} of ${props.itemsCount} results`;
 
     return (
-        <Paper sx={{display: "flex", alignItems: "center", flexDirection: 'row', px: 2, py: 1}}>
+        <Paper sx={{ display: "flex", alignItems: "center", flexDirection: 'row', px: 2, py: 1 }}>
             <Box display="flex">
                 <Typography variant="body1">
                     {resultsSummaryText}
                 </Typography>
                 {props.querySearch && (
                     <Box display="flex">
-                        <Typography variant="body1" sx={{mx: 0.5}}>
+                        <Typography variant="body1" sx={{ mx: 0.5 }}>
                             for
                         </Typography>
-                        <Typography variant="body1" sx={{color: "#0073c4"}}>
+                        <Typography variant="body1" sx={{ color: "#0073c4" }}>
                             <b>"{props.querySearch}"</b>
                         </Typography>
                     </Box>
                 )}
             </Box>
+            {!isEmpty(props.chosenFacets) && (
+                <Box marginLeft="auto">
+                    <ChosenFacetsList 
+                        chosenFacets={props.chosenFacets}
+                        facetCodeToNameMappings={props.facetCodeToNameMappings}
+                        insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
+                    />
+                </Box>
+            )}
             <Box display="flex" marginLeft="auto" alignItems="center">
-                <Typography variant="body1" sx={{mr: 1}}>
+                <Typography variant="body1" sx={{ mr: 1 }}>
                     Sort By:
                 </Typography>
-                <SelectValue 
-                    menuItems={sortOptionMappings} 
-                    size='small' 
+                <SelectValue
+                    menuItems={sortOptionMappings}
+                    size='small'
                     value={props.sortOption}
                     setValue={props.setSortOption}
                 />

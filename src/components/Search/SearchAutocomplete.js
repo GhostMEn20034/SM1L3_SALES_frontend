@@ -61,7 +61,14 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
     }, [open]);
 
     const handleSubmit = (query) => {
-        let querySearch = inputValue || query;
+        let querySearch;
+        if (!query && !inputValue) {
+            querySearch = null;
+        } else if (!query) {
+            querySearch = inputValue;
+        } else {
+            querySearch = query;
+        }
 
         document.activeElement.blur();
 
@@ -90,7 +97,9 @@ const SearchAutocomplete = memo(function SearchAutocomplete() {
 
     const handleChangeSearch = (newValue) => {
         setSearch(newValue);
-        handleSubmit(newValue?.name);
+        if (newValue) {
+            handleSubmit(newValue?.name);
+        }
     };
 
     return (
