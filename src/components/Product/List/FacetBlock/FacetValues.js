@@ -30,7 +30,7 @@ export default function FacetValues(props) {
                             }
                         }}
                         onClick={() => props.insertFacetObjectToChosenFacets(
-                            { "code": props.code, value: facetValue.value, unit: facetValue.unit }
+                            { code: props.code, value: facetValue.value, unit: facetValue.unit, isRange: props.is_range }
                         )}
                     >
                         <Checkbox

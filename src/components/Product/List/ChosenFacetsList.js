@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import { getDisplayValue } from '../../../utils/productFiltering/chosenFacetsServices';
+import { getDisplayNameForRegularFacet } from '../../../utils/productFiltering/chosenFacetsServices';
 import { Chip, Typography } from '@mui/material';
 
 export default function ChosenFacetsList(props) {
@@ -18,6 +18,20 @@ export default function ChosenFacetsList(props) {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const getDisplayName = (facetCode, facetValue, facetUnit, isRange) => {
+        /**
+         * Returns user-friendly view of chosen regular facet if isRange is false.
+         * If isRange is true, returns user-friendly view of chosen range facet.
+         */
+        if (isRange) {
+            let rangeToDisplayNameMappings = props.facetMetadata?.[facetCode]?.range_to_display_name;
+            let displayName = rangeToDisplayNameMappings?.[facetValue?.gteq];
+            return displayName;
+        } else {
+            return getDisplayNameForRegularFacet(facetValue, facetUnit);
+        }
     };
 
     return (
@@ -47,23 +61,28 @@ export default function ChosenFacetsList(props) {
                     <Box>
                         {Object.keys(props.chosenFacets).map((chosenFacetGroup, i) => (
                             <Box key={i} sx={{ mt: i === 0 ? 0 : 2}}>
-                                {props.facetCodeToNameMappings?.[chosenFacetGroup] && (
+                                {props.facetMetadata?.[chosenFacetGroup] && (
                                     <Box ml={1} mb={0.5}>
                                         <Typography variant='body2'>
-                                            {props.facetCodeToNameMappings?.[chosenFacetGroup]}:
+                                            <b>{props.facetMetadata[chosenFacetGroup]?.name}:</b>
                                         </Typography>
                                     </Box>
                                 )}
                                 <Box display="inline-flex" flexWrap="wrap">
-                                    {props.chosenFacets[chosenFacetGroup].map((chosenFacet, i) => (
+                                    {props.chosenFacets[chosenFacetGroup].values.map((chosenFacet, i) => (
                                         <Box key={i + "facetValue"} sx={{ ml: 1, mb: 1 }}>
                                             <Chip
-                                                label={getDisplayValue(chosenFacet.value, chosenFacet.unit)}
+                                                label={getDisplayName(
+                                                    chosenFacetGroup, 
+                                                    chosenFacet.value, 
+                                                    chosenFacet.unit,
+                                                    props.chosenFacets[chosenFacetGroup].is_range,
+                                                )}
                                                 onDelete={() => props.insertFacetObjectToChosenFacets( 
                                                     {
-                                                        code: chosenFacet.code,
+                                                        code: chosenFacetGroup,
                                                         value: chosenFacet.value,
-                                                        unit: chosenFacet.unit
+                                                        unit: chosenFacet.unit,
                                                     }
                                                 )}
                                             />

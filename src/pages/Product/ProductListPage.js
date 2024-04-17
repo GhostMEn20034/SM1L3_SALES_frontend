@@ -34,7 +34,7 @@ export default function ProductListPage() {
     const [facetsLoading, setFacetsLoading] = useState(false);
     const [productList, setProductList] = useState([]);
     const [facetList, setFacetList] = useState([]);
-    const [facetCodeToNameMappings, setFacetCodeToNameMappings] = useState({});
+    const [facetMetadata, setFacetMetadata] = useState({});
     const [categories, setCategories] = useState({});
 
     const querySearch = searchParams.get("q") || '';
@@ -51,9 +51,9 @@ export default function ProductListPage() {
     const apiProducts = useAxios('products');
     const navigate = useNavigate();
 
-    const insertFacetObjectToChosenFacets = ({ code, value, unit }) => {
+    const insertFacetObjectToChosenFacets = ({ code, value, unit, isRange }) => {
         let facetGroups = decodedChosenFacets ? decodedChosenFacets : {};
-        let newChosenFacets = insertFacetValueToChosenFacets(facetGroups, { code, value, unit });
+        let newChosenFacets = insertFacetValueToChosenFacets(facetGroups, { code, value, unit, isRange });
         let newSearchParams = changeQueryParams(searchParams, {
             chosenFacets: encodeChosenFacets(newChosenFacets),
             page: 1,
@@ -138,7 +138,7 @@ export default function ProductListPage() {
             let data = await response.data;
             setFacetList(data.facet_values);
             setCategories(data.categories);
-            setFacetCodeToNameMappings(data.facet_code_to_name_mappings)
+            setFacetMetadata(data.facet_metadata)
             if (!queryMinPrice) {
                 setMinPrice(0 || data?.price_range?._id?.min);
             }
@@ -175,7 +175,7 @@ export default function ProductListPage() {
                     querySearch={querySearch}
 
                     chosenFacets={decodedChosenFacets}
-                    facetCodeToNameMappings={facetCodeToNameMappings}
+                    facetMetadata={facetMetadata}
                     insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}
                 />
             </Box>
@@ -223,6 +223,7 @@ export default function ProductListPage() {
                                 </Box>
                                 <Box>
                                     <FacetList
+                                    
                                         facets={facetList}
                                         chosenFacets={decodedChosenFacets}
                                         insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}

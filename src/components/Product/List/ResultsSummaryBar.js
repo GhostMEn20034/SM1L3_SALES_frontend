@@ -37,7 +37,7 @@ export default function ResultsSummaryBar(props) {
                 <Box marginLeft="auto">
                     <ChosenFacetsList 
                         chosenFacets={props.chosenFacets}
-                        facetCodeToNameMappings={props.facetCodeToNameMappings}
+                        facetMetadata={props.facetMetadata}
                         insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
                     />
                 </Box>

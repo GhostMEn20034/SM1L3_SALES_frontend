@@ -14,7 +14,7 @@ import ExpandMore from "../../../CommonComponents/ExpandMore";
 
 
 export default function FacetItem(props) {
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(props.facet.code in (props.chosenFacets ? props.chosenFacets : {}));
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -22,7 +22,17 @@ export default function FacetItem(props) {
 
     return (
         <Box>
-            <Box display={"flex"} alignItems={"center"}>
+            <Box
+                display={"flex"}
+                alignItems={"center"}
+                sx={{
+                    ":hover": {
+                        "color": "#0073c4",
+                        "cursor": "pointer"
+                    }
+                }}
+                onClick={handleExpandClick}
+            >
                 <Typography variant="body2">
                     <b>{props.facet.name}</b>
                 </Typography>
@@ -56,7 +66,6 @@ export default function FacetItem(props) {
                     )}
                     <ExpandMore
                         expand={expanded}
-                        onClick={handleExpandClick}
                         aria-expanded={expanded}
                         aria-label="show more"
                         size="small"
@@ -70,6 +79,7 @@ export default function FacetItem(props) {
                     <FacetValues
                         values={props.facet?.values}
                         code={props.facet?.code}
+                        is_range={props.facet?.is_range}
                         chosenFacets={props.chosenFacets}
                         insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
                     />
