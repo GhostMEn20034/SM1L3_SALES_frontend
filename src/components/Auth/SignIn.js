@@ -42,7 +42,7 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [searchParams, _] = useSearchParams();
+    const [searchParams, ] = useSearchParams();
 
     const isFormValid = () => {
         return email.trim() && password.trim();

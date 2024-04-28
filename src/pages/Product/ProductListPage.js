@@ -117,7 +117,11 @@ export default function ProductListPage() {
             setProductList(data.items);
 
         } catch (e) {
-            console.log("Something went wrong");
+            if (e.response.status === 400) {
+                navigate("/");
+            } else {
+                console.log("Something went wrong");
+            }
         }
         setProductsLoading(false);
     };
@@ -146,11 +150,15 @@ export default function ProductListPage() {
                 setMaxPrice(0 || data?.price_range?._id?.max);
             }
         } catch (e) {
-            console.log("Something went wrong");
-            setFacetList([]);
-            setCategories({});
-            setMinPrice(0);
-            setMaxPrice(0);
+            if (e.response.status === 400) {
+                navigate("/");
+            } else {
+                console.log("Something went wrong");
+                setFacetList([]);
+                setCategories({});
+                setMinPrice(0);
+                setMaxPrice(0);
+            }
         }
         setFacetsLoading(false);
     };
@@ -223,7 +231,7 @@ export default function ProductListPage() {
                                 </Box>
                                 <Box>
                                     <FacetList
-                                    
+
                                         facets={facetList}
                                         chosenFacets={decodedChosenFacets}
                                         insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}
@@ -285,7 +293,7 @@ export default function ProductListPage() {
                                         </Typography>
                                     </Box>
                                     <Box display="flex">
-                                        <Box sx={{mr: 0.5}}>
+                                        <Box sx={{ mr: 0.5 }}>
                                             <Typography variant="subtitle2">
                                                 To get some results you can
                                             </Typography>

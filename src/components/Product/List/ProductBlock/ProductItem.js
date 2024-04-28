@@ -34,7 +34,7 @@ const ProductItem = memo(function ProductItem(props) {
 
     return (
         <Box display="flex">
-            <Box className="ImageSection" sx={{ ml: 2, mr: 5, minWidth: 200 }}
+            <Box className="ImageSection" sx={{ ml: 2, mr: 5, minWidth: 200, maxWidth: 210 }}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -42,8 +42,7 @@ const ProductItem = memo(function ProductItem(props) {
                 <img
                     src={props.image}
                     alt={props.name}
-                    height={150}
-                    style={{ objectFit: 'scale-down' }}
+                    style={{ objectFit: 'scale-down', width: "100%", maxHeight: 150 }}
                 />
             </Box>
             <Box className="ProductInfoSection">
