@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 export default function PriceBox(props) {
     return (
-        <Box >
+        <Box display={"inline-block"}>
             <Typography variant="h6" fontWeight={"lighter"}>
                 {currencySymbol}{props.discounted_price.toFixed(2)}
             </Typography>

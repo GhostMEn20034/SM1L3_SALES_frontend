@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Divider, Link, Paper, Typography } from "@mui/material";
+import { Alert, Box, Divider, Link, Paper, Typography } from "@mui/material";
 
 
 import { currencySymbol } from "../../utils/consts";
@@ -8,13 +8,18 @@ import ProceedToCheckout from "../../components/Cart/ProceedToCheckout";
 import CartEmpty from "../../components/Cart/CartEmpty";
 import UserContext from "../../context/UserContext";
 import useAxios from "../../utils/useAxios";
+import { useLocation } from "react-router-dom";
 
 
 export default function CartItemListPage() {
-    const [cartData, setCartData] = useState(null);
-
     const api = useAxios('users');
+    const location = useLocation();
+    const stateData = location.state;
+
     const { userInfo, refreshUserInfo } = useContext(UserContext);
+
+    const [cartData, setCartData] = useState(null);
+    const [alertMessage, setAlertMessage] = useState(null || stateData.alertMessage);
 
 
     const getCartData = async () => {
@@ -22,25 +27,30 @@ export default function CartItemListPage() {
             let response = await api.get(`/api/carts/${userInfo.cart.cart_uuid}/`);
             let data = await response.data;
             setCartData(data);
-            console.log(data);
         } catch (e) {
             console.log("Something went wrong");
         }
     };
 
-    const changeCartItemQuantity = async (cartItemId, newQuantity) => {
+    const changeCartItemQuantity = async (cartItemId, newQuantity, productName) => {
+        productName = productName ? productName : "Cart Item";
         try {
             await api.patch(`/api/carts/${userInfo.cart.cart_uuid}/items/${cartItemId}/`, { quantity: newQuantity });
-            refreshUserInfo()
+            refreshUserInfo();
+            if (!newQuantity) {
+                setAlertMessage({ severity: "info", message: `${productName} Was removed from Your Cart` })
+            }
         } catch (e) {
             console.log("Something Went Wrong");
         }
     };
 
-    const deleteCartItem = async (cartItemId) => {
+    const deleteCartItem = async (cartItemId, productName) => {
+        productName = productName ? productName : "Cart Item";
         try {
             await api.delete(`/api/carts/${userInfo.cart.cart_uuid}/items/${cartItemId}/`);
             refreshUserInfo();
+            setAlertMessage({ severity: "info", message: `${productName} Was removed from Your Cart` });
         } catch (e) {
             console.log("Something Went Wrong");
         }
@@ -50,6 +60,7 @@ export default function CartItemListPage() {
         try {
             await api.post(`/api/carts/${userInfo.cart.cart_uuid}/clear/`);
             refreshUserInfo();
+            setAlertMessage({ severity: "info", message: "Cart was cleared" });
         } catch (e) {
             console.log("Something Went Wrong");
         }
@@ -67,6 +78,7 @@ export default function CartItemListPage() {
             <Box sx={{ padding: 3 }}>
                 <Box display={"flex"} justifyContent="center">
                     <Box sx={{ minWidth: "850px", maxWidth: "1200px" }}>
+
                         <Paper sx={{ px: 3, py: 2 }}>
                             <Box sx={{ mb: 1 }}>
                                 <Typography variant="h4">
@@ -83,6 +95,16 @@ export default function CartItemListPage() {
                                 </Box>
                             )}
                             <Divider />
+                            {alertMessage && (
+                                <Box my={2}>
+                                    <Alert
+                                        severity={alertMessage.severity}
+                                        onClose={() => setAlertMessage(null)}
+                                    >
+                                        {alertMessage.message}
+                                    </Alert>
+                                </Box>
+                            )}
                             <Box>
                                 {cartData.cart_items?.length > 0 ? (
                                     <CartItemList

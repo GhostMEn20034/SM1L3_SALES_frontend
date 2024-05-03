@@ -1,4 +1,4 @@
-import { isObject } from "../dataTypeUtils/objectUtils";
+import { isObject } from "../../dataTypeUtils/objectUtils";
 
 export const decodeChosenFacets = (encodedFacets) => {
     /**

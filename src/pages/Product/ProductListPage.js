@@ -8,14 +8,14 @@ import { changeQueryParams, deleteQueryParams } from "../../utils/urlParams/chan
 import {
     encodeChosenFacets, decodeChosenFacets,
     insertFacetValueToChosenFacets, clearChosenFacetCode
-} from "../../utils/productFiltering/chosenFacetsServices";
+} from "../../utils/products/productFiltering/chosenFacetsServices";
 
 import UserContext from "../../context/UserContext";
 import ProductList from "../../components/Product/List/ProductBlock/ProductList";
 import FacetList from "../../components/Product/List/FacetBlock/FacetList";
 import ResultsSummaryBar from "../../components/Product/List/ResultsSummaryBar";
 import useAxios from '../../utils/useAxios';
-import ProductFilters from "../../utils/productFiltering/productFilters";
+import ProductFilters from "../../utils/products/productFiltering/productFilters";
 import CategoryFacet from "../../components/Product/List/FacetBlock/CategoryFacet";
 import PriceRangeFacet from "../../components/Product/List/FacetBlock/PriceRange";
 
@@ -23,20 +23,25 @@ export default function ProductListPage() {
     const { userInfo, refreshCartData } = useContext(UserContext);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [pageSize, setPageSize] = useState(20);
+    const [pageSize] = useState(20);
     const [pageCount, setPageCount] = useState(1);
     const [itemsCount, setItemsCount] = useState(20);
     // Price values for textfield
     const [minPrice, setMinPrice] = useState(0 || searchParams.get("minPrice"));
     const [maxPrice, setMaxPrice] = useState(0 || searchParams.get("maxPrice"));
 
+    // Loading states
     const [productsLoading, setProductsLoading] = useState(false);
     const [facetsLoading, setFacetsLoading] = useState(false);
+
+    // Product Data
     const [productList, setProductList] = useState([]);
     const [facetList, setFacetList] = useState([]);
+
     const [facetMetadata, setFacetMetadata] = useState({});
     const [categories, setCategories] = useState({});
 
+    // Query param values
     const querySearch = searchParams.get("q") || '';
     const page = Number(searchParams.get("page")) || 1;
     // Price values for queryparams

@@ -12,7 +12,6 @@ import SignUpRoutes from './routes/SignUp';
 import ResetPasswordRoutes from './routes/ResetPassword';
 import CartRoutes from './routes/Carts';
 import ProductRoutes from './routes/Products';
-import ImageViewer from './components/Images/ImageViewer';
 
 
 function App() {
@@ -37,7 +36,7 @@ function App() {
             <Route path='/*' element={
               <ProductRoutes />
             }/>
-            <Route path='/test-images' element={<ImageViewer />}/>
+            
             <Route path='/change-email/verify' element={
               <PrivateRoute>
                 <ConfirmNewEmail />

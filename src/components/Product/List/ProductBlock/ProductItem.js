@@ -1,5 +1,6 @@
 import { Box, Typography, Link } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Link as RouterLink } from "react-router-dom";
 
 import PriceBox from "./PriceBox";
 import ProductStock from '../../ProductStock';
@@ -34,37 +35,43 @@ const ProductItem = memo(function ProductItem(props) {
 
     return (
         <Box display="flex">
-            <Box className="ImageSection" sx={{ ml: 2, mr: 5, minWidth: 200, maxWidth: 210 }}
+            <Box className="ImageSection" sx={{ px: 3 }}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
             >
-                <img
-                    src={props.image}
-                    alt={props.name}
-                    style={{ objectFit: 'scale-down', width: "100%", maxHeight: 150 }}
-                />
+                <Link component={RouterLink} to={`/item/${props.id}`} underline="none" color="inherit">
+                    <img
+                        src={props.image}
+                        alt={props.name}
+                        style={{ objectFit: 'scale-down', width: "210px", maxHeight: "150px" }}
+                    />
+                </Link>
             </Box>
             <Box className="ProductInfoSection">
                 <Box className="TitleBox">
-                    <Typography variant="body1" sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: "2",
-                        WebkitBoxOrient: "vertical",
-                    }} >
-                        {props.name}
-                    </Typography>
+                    <Link component={RouterLink} to={`/item/${props.id}`} underline="none" color="inherit" sx={{
+                        '&:hover': {
+                            color: '#0073C4' // color on hover
+                        }
+                    }}>
+                        <Typography variant="body1" sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: "2",
+                            WebkitBoxOrient: "vertical",
+                        }} >
+                            {props.name}
+                        </Typography>
+                    </Link>
                 </Box>
                 <Box className="PriceBox">
-                    <Box>
-                        <PriceBox
-                            discount_percentage={props.discount_percentage}
-                            original_price={props.original_price}
-                            discounted_price={props.discounted_price}
-                        />
-                    </Box>
+                    <PriceBox
+                        discount_percentage={props.discount_percentage}
+                        original_price={props.original_price}
+                        discounted_price={props.discounted_price}
+                    />
                 </Box>
                 <Box className='ProductStockBox'>
                     <ProductStock stock={props.stock} />

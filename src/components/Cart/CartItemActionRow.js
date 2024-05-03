@@ -6,14 +6,23 @@ import { range } from "../../utils/commonServices";
 import { arrayToMenuItems } from "../../utils/componentServices/selectorServices";
 
 export default function CartItemActionRow(props) {
-    let stock = props.stock ? props.stock : 0;
+    let {
+        id,
+        maxOrderQuantity,
+        stock = 0,
+        productName,
+        itemQuantity,
+        changeCartItemQuantity,
+        
+        deleteCartItem,
+    } = props;
 
-    let maxOrderQuantity = stock > props.maxOrderQuantity ? props.maxOrderQuantity : stock;
+    maxOrderQuantity = stock > maxOrderQuantity ? maxOrderQuantity : stock;
 
     return (
         <Box display="flex" alignItems="center">
             <Box>
-                <SelectValue value={props.itemQuantity} setValue={(value) => props.changeCartItemQuantity(props.id, Number(value))}
+                <SelectValue value={itemQuantity} setValue={(value) => changeCartItemQuantity(id, Number(value), productName)}
                     menuItems={[
                         { "name": "0 (Delete)", "value": 0 },
                         ...arrayToMenuItems(range(1, maxOrderQuantity + 1))
@@ -25,7 +34,7 @@ export default function CartItemActionRow(props) {
                 />
             </Box>
             <Box display="flex" alignItems="center" sx={{ ml: 2 }}>
-                <Link component="button" underline={"hover"} onClick={() => props.deleteCartItem(props.id)}>
+                <Link component="button" underline={"hover"} onClick={() => deleteCartItem(id, productName)}>
                     <Typography>
                         Delete
                     </Typography>

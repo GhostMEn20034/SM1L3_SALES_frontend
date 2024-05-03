@@ -1,22 +1,15 @@
 import React from "react";
-import { Box, useTheme, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 
-const Thumbnail = ({ path, onHoverThumbnail, active }) => {
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+const Thumbnail = ({ path, onClickThumbnail, active }) => {
 
   const borderColor = active ? '#0073C4' : 'grey';
-  const size = isMobile ? { width: '50px', height: '60px' } : { width: '65px', height: '75px' };
 
   return (
     <Box
-      onMouseOver={() => onHoverThumbnail && onHoverThumbnail()}
+      className="thumbnail-box"
+      onClick={() => onClickThumbnail && onClickThumbnail()}
       sx={{
-        minWidth: size.width,
-        minHeight: size.height,
-        maxWidth: size.width,
-        maxHeight: size.height,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -27,11 +20,11 @@ const Thumbnail = ({ path, onHoverThumbnail, active }) => {
           "cursor": "pointer",
         }
       }}>
-      <img src={path}
+      <img 
+        className="thumbnail-image"
+        src={path}  
         alt={`No Available img`}
         style={{
-          width: size.width,
-          height: size.height,
           objectFit: 'scale-down',
         }} />
     </Box>

@@ -37,6 +37,7 @@ export default function CartItem(props) {
                         stock={props.product?.stock}
                         maxOrderQuantity={props.product?.max_order_qty}
                         itemQuantity={props.itemQuantity}
+                        productName={props.product?.name}
                         id={props.id}
                         changeCartItemQuantity={props.changeCartItemQuantity}
                         deleteCartItem={props.deleteCartItem}

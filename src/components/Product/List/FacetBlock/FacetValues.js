@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Checkbox, Typography, Link } from "@mui/material";
 
-import { isFacetValueChecked } from "../../../../utils/productFiltering/chosenFacetsServices";
+import { isFacetValueChecked } from "../../../../utils/products/productFiltering/chosenFacetsServices";
 
 
 export default function FacetValues(props) {
