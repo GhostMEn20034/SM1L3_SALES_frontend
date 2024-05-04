@@ -35,6 +35,8 @@ export default function SummaryPanel(props) {
         return inCartCount < maxOrderQty && inCartCount < stock;
     };
 
+    let maxInCartCount = stock > maxOrderQty ? maxOrderQty : stock; // indicates how many products you can add to the cart
+
     return (
         <Box>
             <Box sx={{
@@ -83,7 +85,7 @@ export default function SummaryPanel(props) {
             <Box sx={{ mt: 2, mb: 3 }}>
                 <SelectValue value={inCartProductQuantity} setValue={(value) => setInCartProductQuantity(Number(value))}
                     menuItems={[
-                        ...arrayToMenuItems(range(1, maxOrderQty + 1))
+                        ...arrayToMenuItems(range(1, maxInCartCount + 1))
                     ]}
                     size="small"
                     label={"Quantity"}

@@ -19,7 +19,7 @@ export default function CartItemListPage() {
     const { userInfo, refreshUserInfo } = useContext(UserContext);
 
     const [cartData, setCartData] = useState(null);
-    const [alertMessage, setAlertMessage] = useState(null || stateData.alertMessage);
+    const [alertMessage, setAlertMessage] = useState(null || stateData?.alertMessage);
 
 
     const getCartData = async () => {

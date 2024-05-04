@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 import ProductStock from "../Product/ProductStock";
@@ -9,25 +10,33 @@ export default function CartItem(props) {
     return (
         <Box display={"flex"}>
             <Box>
-                <img
-                    alt="No Product Img"
-                    src={props.product?.image}
-                    height={150}
-                    width={180}
-                    style={{ objectFit: 'scale-down' }}
-                />
+                <Link component={RouterLink} to={`/item/${props.product?.object_id}`} underline="none" color="inherit">
+                    <img
+                        alt="No Product Img"
+                        src={props.product?.image}
+                        height={150}
+                        width={180}
+                        style={{ objectFit: 'scale-down' }}
+                    />
+                </Link>
             </Box>
             <Box sx={{ ml: 3, maxWidth: 450, mt: 0.3 }}>
                 <Box>
-                    <Typography variant="body1" sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: "2",
-                        WebkitBoxOrient: "vertical",
+                    <Link component={RouterLink} to={`/item/${props.product?.object_id}`} underline="none" color="inherit" sx={{
+                        '&:hover': {
+                            color: '#0073C4' // color on hover
+                        }
                     }}>
-                        {props.product?.name}
-                    </Typography>
+                        <Typography variant="body1" sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: "2",
+                            WebkitBoxOrient: "vertical",
+                        }}>
+                            {props.product?.name}
+                        </Typography>
+                    </Link>
                 </Box>
                 <Box sx={{ mt: 1 }}>
                     <ProductStock stock={props.product?.stock} />
@@ -45,8 +54,8 @@ export default function CartItem(props) {
                 </Box>
                 {props.product?.stock < 1 && (
                     <Box sx={{ mt: 1 }} display="flex" alignItems="center">
-                        <WarningAmberOutlinedIcon sx={{color: "orange"}} />
-                        <Typography variant="subtitle2" sx={{color: "orange"}}>
+                        <WarningAmberOutlinedIcon sx={{ color: "orange" }} />
+                        <Typography variant="subtitle2" sx={{ color: "orange" }}>
                             This product will be ignored during checkout since it is out of stock
                         </Typography>
                     </Box>

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
     Box,
     Container,
-    useTheme, useMediaQuery
+    useTheme, useMediaQuery, Typography, Divider
 } from "@mui/material";
 
 // Custom Components and functionality or constants
@@ -17,6 +17,7 @@ import SummaryPanel from "../../components/Product/Details/SummaryPanel";
 
 // Styles
 import "../../styles/products/imageViewerStyles.css";
+import ProductSpecs from "../../components/Product/Details/ProductSpecs";
 
 
 const MemoizedImageViewer = memo(function MemoizedImageViewer({ images, imageScrollbarHeight,
@@ -27,7 +28,7 @@ const MemoizedImageViewer = memo(function MemoizedImageViewer({ images, imageScr
             imageBoxWidth={imageBoxWidth}
             imageBoxHeight={imageBoxHeight}
         />
-    )
+    );
 });
 
 
@@ -70,18 +71,18 @@ export default function ProductDetailPage() {
                 product_id: id,
                 quantity: inCartProductQuantity,
             });
+            refreshCartData();
+            navigate(
+                "/cart",
+                {
+                    state: {
+                        alertMessage: { severity: "success", message: `${inCartProductQuantity} x ${productData?.name} Was added to Cart` },
+                    },
+                },
+            );
         } catch (err) {
             console.log(err.response);
         }
-        refreshCartData();
-        navigate(
-            "/cart",
-            {
-                state: {
-                    alertMessage: {severity: "success", message: `${inCartProductQuantity} x ${productData?.name} Was added to Cart`},
-                },
-            },
-        );
     };
 
     const getProductById = async () => {
@@ -103,7 +104,6 @@ export default function ProductDetailPage() {
     return (
         <Container className="MainContainer" maxWidth="xl" sx={{ padding: 2 }}>
             {productData && (
-
                 <Box>
                     <Box className='breadCrumbBox'>
                         <BreadCrumb
@@ -122,7 +122,7 @@ export default function ProductDetailPage() {
                                 pt: 1, pb: 4,
                                 px: 2.5,
                                 mx: 0,
-                                boxShadow: 3,
+                                boxShadow: 1,
                                 borderRadius: "15px",
                             }}
                             maxWidth={"md"}
@@ -147,6 +147,17 @@ export default function ProductDetailPage() {
                                 isMobile={isMobile}
                                 isTablet={isTablet}
                                 addProductToCart={addProductToCart}
+                            />
+                        </Container>
+                    </Box>
+                    <Box className="about-this-item" sx={{ mt: 2 }}>
+                        <Typography variant="h5">
+                            <b>About this item</b>
+                        </Typography>
+                        <Divider sx={{ my: 2 }} />
+                        <Container disableGutters maxWidth="xl">
+                            <ProductSpecs
+                                specs={productData?.attrs}
                             />
                         </Container>
                     </Box>
