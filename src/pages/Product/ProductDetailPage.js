@@ -10,14 +10,18 @@ import {
 import useAxios from "../../utils/useAxios";
 import UserContext from "../../context/UserContext";
 import { getCategoryBreadCrumbData } from "../../utils/products/productDataUtils";
+import { updateObject } from "../../utils/dataTypeUtils/objectUtils";
 import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
 import ImageViewer from "../../components/Images/ImageViewer";
 import SummaryPanel from "../../components/Product/Details/SummaryPanel";
-
+import ProductVariationOptions from "../../components/Product/Details/ProductVariationOptions";
 
 // Styles
 import "../../styles/products/imageViewerStyles.css";
 import ProductSpecs from "../../components/Product/Details/ProductSpecs";
+import dayjs from "dayjs";
+
+var lodash = require("lodash");
 
 
 const MemoizedImageViewer = memo(function MemoizedImageViewer({ images, imageScrollbarHeight,
@@ -37,6 +41,11 @@ export default function ProductDetailPage() {
     const { userInfo, refreshCartData } = useContext(UserContext);
     let cartItems = userInfo?.cart?.items;
 
+    const productsApi = useAxios('products');
+    const usersApi = useAxios('users');
+
+    const navigate = useNavigate();
+
     const getInCartCount = () => {
 
         if (!cartItems) {
@@ -52,13 +61,12 @@ export default function ProductDetailPage() {
     };
 
     const [productData, setProductData] = useState(null);
+    const [productVariations, setProductVariations] = useState(null);
     const [categoryHierarchy, setCategoryHierarchy] = useState(null);
+
+    // User input states
     const [inCartProductQuantity, setInCartProductQuantity] = useState(getInCartCount() || 1);
-
-    const productsApi = useAxios('products');
-    const usersApi = useAxios('users');
-
-    const navigate = useNavigate();
+    const [chosenOptions, setChosenOptions] = useState(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -85,6 +93,23 @@ export default function ProductDetailPage() {
         }
     };
 
+    const changeProductOption = (valuesToUpdate) => {
+        let chosenOptionsCopy = structuredClone(chosenOptions);
+        updateObject(chosenOptionsCopy, valuesToUpdate);
+        let foundProduct = productVariations?.items.find((product) =>
+            lodash.isEqual(chosenOptionsCopy, product.variation_attributes)
+        );
+        if (!foundProduct) {
+            foundProduct = productVariations?.items.find((product) =>
+                lodash.isMatch(product.variation_attributes, valuesToUpdate)
+            );
+            updateObject(chosenOptionsCopy, foundProduct?.variation_attributes);
+        }
+
+        setChosenOptions(chosenOptionsCopy);
+        navigate(`/item/${foundProduct?._id}`);
+    };
+
     const getProductById = async () => {
         try {
             let response = await productsApi.get(`/api/v1/products/${id}`)
@@ -96,73 +121,119 @@ export default function ProductDetailPage() {
         }
     };
 
+    const getVariationsByProductId = async () => {
+        try {
+            let response = await productsApi.get(`/api/v1/products/${id}/get-variations/`)
+            let data = await response.data;
+            setProductVariations(data);
+            setChosenOptions(data?.items.find(item => item._id === id)?.variation_attributes);
+        } catch (e) {
+            console.log("Variations not found");
+        }
+    };
 
     useEffect(() => {
         getProductById();
     }, [id]);
 
+    useEffect(() => {
+        getVariationsByProductId();
+    }, []);
+
     return (
         <Container className="MainContainer" maxWidth="xl" sx={{ padding: 2 }}>
-            {productData && (
-                <Box>
-                    <Box className='breadCrumbBox'>
-                        <BreadCrumb
-                            breadCrumbData={getCategoryBreadCrumbData(categoryHierarchy)}
-                            typographyVariant={isMobile ? "body2" : "body1"}
-                        />
-                    </Box>
-                    <Box sx={{
-                        mt: 1,
-                        display: isMobile || isTablet ? "block" : "flex",
-                    }}>
-                        <Container
-                            className="picture-panel"
-                            disableGutters
-                            sx={{
-                                pt: 1, pb: 4,
-                                px: 2.5,
-                                mx: 0,
-                                boxShadow: 1,
-                                borderRadius: "15px",
-                            }}
-                            maxWidth={"md"}
-                        >
-                            <MemoizedImageViewer
-                                images={productData?.images}
+            <Box>
+                {productData && (
+                    <Box>
+                        <Box className='breadCrumbBox'>
+                            <BreadCrumb
+                                breadCrumbData={getCategoryBreadCrumbData(categoryHierarchy)}
+                                typographyVariant={isMobile ? "body2" : "body1"}
                             />
+                        </Box>
+                        <Box sx={{
+                            mt: 1,
+                            display: isMobile || isTablet ? "block" : "flex",
+                        }}>
+                            <Container
+                                className="picture-panel"
+                                disableGutters
+                                sx={{
+                                    pt: 1, pb: 4,
+                                    px: 2.5,
+                                    mx: 0,
+                                    boxShadow: 1,
+                                    borderRadius: "15px",
+                                }}
+                                maxWidth={"md"}
+                            >
+                                <MemoizedImageViewer
+                                    images={productData?.images}
+                                />
 
-                        </Container>
-                        <Container disableGutters maxWidth="lg" className="SummaryPanel" sx={{ paddingLeft: 3 }}>
-                            <SummaryPanel
-                                productName={productData?.name}
-                                isForSale={productData?.for_sale}
-                                discountedPrice={productData?.discounted_price}
-                                discountPercentage={productData?.discount_percentage}
-                                originalPrice={productData?.original_price}
-                                stock={productData?.stock}
-                                maxOrderQty={productData?.max_order_qty}
-                                inCartCount={getInCartCount()}
-                                inCartProductQuantity={inCartProductQuantity}
-                                setInCartProductQuantity={setInCartProductQuantity}
-                                isMobile={isMobile}
-                                isTablet={isTablet}
-                                addProductToCart={addProductToCart}
-                            />
-                        </Container>
+                            </Container>
+                            <Container disableGutters maxWidth="lg" className="SummaryPanel" sx={{ paddingLeft: 3 }}>
+                                <SummaryPanel
+                                    productName={productData?.name}
+                                    isForSale={productData?.for_sale}
+                                    discountedPrice={productData?.discounted_price}
+                                    discountPercentage={productData?.discount_percentage}
+                                    originalPrice={productData?.original_price}
+                                    stock={productData?.stock}
+                                    maxOrderQty={productData?.max_order_qty}
+                                    inCartCount={getInCartCount()}
+                                    inCartProductQuantity={inCartProductQuantity}
+                                    setInCartProductQuantity={setInCartProductQuantity}
+                                    isMobile={isMobile}
+                                    isTablet={isTablet}
+                                    addProductToCart={addProductToCart}
+                                />
+                            </Container>
+                        </Box>
+
                     </Box>
-                    <Box className="about-this-item" sx={{ mt: 2 }}>
-                        <Typography variant="h5">
-                            <b>About this item</b>
-                        </Typography>
+                )}
+                {productVariations && (
+                    <Box className="item-options" sx={{ mt: 2 }}>
+                        <Box>
+                            <Typography variant="h5">
+                                <b>Item Options</b>
+                            </Typography>
+                        </Box>
                         <Divider sx={{ my: 2 }} />
                         <Container disableGutters maxWidth="xl">
-                            <ProductSpecs
-                                specs={productData?.attrs}
+                            <ProductVariationOptions
+                                variationOptions={productVariations.variation_summary.variation_options}
+                                chosenOptions={chosenOptions}
+                                productItems={productVariations.items}
+                                changeProductOption={changeProductOption}
                             />
                         </Container>
                     </Box>
-                </Box>
-            )}
+                )}
+                {productData && (
+                    <Box className="about-this-item" sx={{ mt: 2 }}>
+                        <Box>
+                            <Typography variant="h5">
+                                <b>About this item</b>
+                            </Typography>
+                        </Box>
+                        <Divider sx={{ my: 2 }} />
+                        <Container disableGutters maxWidth="xl">
+                            <Box>
+                                <ProductSpecs
+                                    specs={productData?.attrs}
+                                    additionalInformation={[
+                                        { "name": "Date First Available", "display_name": dayjs(productData?.created_at).format('LL') }
+                                    ]}
+                                />
+                            </Box>
+                        </Container>
+                    </Box>
+                )}
+
+            </Box>
+
         </Container>
     );
 };

@@ -11,3 +11,11 @@ export function isEmpty(obj) {
     }
     return Object.keys(obj).length === 0;
 }
+
+export function updateObject(objectToUpdate, updatedValues) {
+    Object.keys(updatedValues).forEach((key) => {
+      if (objectToUpdate.hasOwnProperty(key)) {
+        objectToUpdate[key] = updatedValues[key];
+      }
+    });
+};
