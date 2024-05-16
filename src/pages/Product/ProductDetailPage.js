@@ -2,8 +2,9 @@ import { memo, useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     Box,
-    Container,
-    useTheme, useMediaQuery, Typography, Divider
+    Container, useTheme,
+    useMediaQuery, Typography,
+    Divider, LinearProgress,
 } from "@mui/material";
 
 // Custom Components and functionality or constants
@@ -20,17 +21,17 @@ import ProductVariationOptions from "../../components/Product/Details/ProductVar
 import "../../styles/products/imageViewerStyles.css";
 import ProductSpecs from "../../components/Product/Details/ProductSpecs";
 import dayjs from "dayjs";
+import ProductNotFoundPage from "./ProductNotFound";
 
 var lodash = require("lodash");
 
 
-const MemoizedImageViewer = memo(function MemoizedImageViewer({ images, imageScrollbarHeight,
-    imageBoxWidth, imageBoxHeight, }) {
+const MemoizedImageViewer = memo(function MemoizedImageViewer({ images, currentImage, setCurrentImage }) {
     return (
-        <ImageViewer images={images}
-            imageScrollbarHeight={imageScrollbarHeight}
-            imageBoxWidth={imageBoxWidth}
-            imageBoxHeight={imageBoxHeight}
+        <ImageViewer
+            images={images}
+            currentImage={currentImage}
+            setCurrentImage={setCurrentImage}
         />
     );
 });
@@ -63,10 +64,13 @@ export default function ProductDetailPage() {
     const [productData, setProductData] = useState(null);
     const [productVariations, setProductVariations] = useState(null);
     const [categoryHierarchy, setCategoryHierarchy] = useState(null);
+    const [productNotFound, setProductNotFound] = useState(false);
 
     // User input states
+    const [currentImage, setCurrentImage] = useState(0);
     const [inCartProductQuantity, setInCartProductQuantity] = useState(getInCartCount() || 1);
     const [chosenOptions, setChosenOptions] = useState(null);
+    const [loadingNewProduct, setLoadingNewProduct] = useState(false);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -107,17 +111,29 @@ export default function ProductDetailPage() {
         }
 
         setChosenOptions(chosenOptionsCopy);
+        setCurrentImage(0);
         navigate(`/item/${foundProduct?._id}`);
     };
 
     const getProductById = async () => {
+        setLoadingNewProduct(true);
+        let successRetrieval = true;
         try {
             let response = await productsApi.get(`/api/v1/products/${id}`)
             let data = await response.data;
             setProductData(data?.item);
             setCategoryHierarchy(data?.category_hierarchy);
         } catch (e) {
-            console.log("Product not found");
+            setProductNotFound(true);
+            successRetrieval = false;
+        }
+        setLoadingNewProduct(false);
+        if (userInfo?.user && successRetrieval) {
+            try {
+                await usersApi.post('/api/history/', {"product": id});
+            } catch (e) {
+                console.log("Something Went Wrong");
+            }
         }
     };
 
@@ -139,6 +155,14 @@ export default function ProductDetailPage() {
     useEffect(() => {
         getVariationsByProductId();
     }, []);
+
+    if (productNotFound) {
+        return (
+            <ProductNotFoundPage
+                goBack={() => navigate(-1)}
+            />
+        );
+    }
 
     return (
         <Container className="MainContainer" maxWidth="xl" sx={{ padding: 2 }}>
@@ -168,6 +192,8 @@ export default function ProductDetailPage() {
                                 maxWidth={"md"}
                             >
                                 <MemoizedImageViewer
+                                    currentImage={currentImage}
+                                    setCurrentImage={setCurrentImage}
                                     images={productData?.images}
                                 />
 
@@ -202,6 +228,9 @@ export default function ProductDetailPage() {
                         </Box>
                         <Divider sx={{ my: 2 }} />
                         <Container disableGutters maxWidth="xl">
+                            {loadingNewProduct && (
+                                <LinearProgress />
+                            )}
                             <ProductVariationOptions
                                 variationOptions={productVariations.variation_summary.variation_options}
                                 chosenOptions={chosenOptions}

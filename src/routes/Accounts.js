@@ -5,7 +5,7 @@ import PrivateRoute from "../utils/PrivateRoute";
 import YourAccountPage from "../pages/Account/YourAccountPage";
 import PersonalInfoPage from "../pages/Account/PersonalInfoPage";
 import ChangePersonalInfoPage from "../pages/Account/ChangePersonalInfoPage";
-
+import HistoryPage from "../pages/Account/HistoryPage";
 export default function AccountRoutes() {
     return (
         <Routes>
@@ -22,6 +22,11 @@ export default function AccountRoutes() {
             <Route path='personal-information/change' element={
                 <PrivateRoute>
                     <ChangePersonalInfoPage />
+                </PrivateRoute>
+            } />
+            <Route path='/recently-viewed-items' element={
+                <PrivateRoute>
+                    <HistoryPage />
                 </PrivateRoute>
             } />
         </Routes>

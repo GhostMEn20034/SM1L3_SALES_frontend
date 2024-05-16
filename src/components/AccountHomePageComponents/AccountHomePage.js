@@ -29,10 +29,10 @@ const settings = [
         nextDestanation: '/addresses'
     },
     {
-        settingName: "History",
+        settingName: "Recently viewed items",
         settingDescription: "View all products you've seen",
         settingIcon: <RestoreOutlinedIcon sx={{fontSize: "100px", color: "#353582cf"}} />,
-        nextDestanation: '/history'
+        nextDestanation: '/recently-viewed-items'
     },
     {
         settingName: "Payments",

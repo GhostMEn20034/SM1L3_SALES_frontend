@@ -6,6 +6,7 @@ import { UserProvider } from './context/UserContext';
 
 import PrivateRoute from './utils/PrivateRoute';
 import ConfirmNewEmail from './components/Confirmation/ConfirmNewEmail';
+import IndexPage from './pages/IndexPage';
 import AccountRoutes from './routes/Accounts';
 import AddressRoutes from './routes/Addresses';
 import SignUpRoutes from './routes/SignUp';
@@ -28,18 +29,22 @@ function App() {
           {!authRoutes.includes(location.pathname) && <AppBarMenu />}
           <Routes>
             <Route path='/signin' element={<Login />} />
-            <Route path='/your-account/*' element={<AccountRoutes />}/>
-            <Route path='/your-account/addresses/*' element={<AddressRoutes />}/>
-            <Route path='/signup/*' element={<SignUpRoutes />}/>
-            <Route path='/reset-password/*' element={<ResetPasswordRoutes />}/>
+            <Route path='/your-account/*' element={<AccountRoutes />} />
+            <Route path='/your-account/addresses/*' element={<AddressRoutes />} />
+            <Route path='/signup/*' element={<SignUpRoutes />} />
+            <Route path='/reset-password/*' element={<ResetPasswordRoutes />} />
             <Route path='/cart/*' element={<CartRoutes />} />
             <Route path='/*' element={
               <ProductRoutes />
-            }/>
-            
+            } />
             <Route path='/change-email/verify' element={
               <PrivateRoute>
                 <ConfirmNewEmail />
+              </PrivateRoute>
+            } />
+            <Route path='/' element={
+              <PrivateRoute>
+                <IndexPage />
               </PrivateRoute>
             } />
             <Route path='/private' element={

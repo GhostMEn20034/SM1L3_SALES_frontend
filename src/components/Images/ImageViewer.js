@@ -15,17 +15,17 @@ import 'swiper/css/navigation';
 import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 
 
-export default function ImageViewer({ images }) {
+export default function ImageViewer({ images,currentImage, setCurrentImage }) {
     const slidesPerView = 4;
 
-    const [currentIndex, setCurrentIndex] = useState(0);
+    
     const [swiperInstance, setSwiperInstance] = useState(null);
 
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(images?.length <= slidesPerView);
 
     const onClickThumbnail = (position) => {
-        setCurrentIndex(position);
+        setCurrentImage(position);
     };
 
     const thumbs = images.map((image, index) => (
@@ -33,7 +33,7 @@ export default function ImageViewer({ images }) {
             <Box>
                 <SwiperSlide key={`swiper-${index}`}>
                     <Thumbnail
-                        active={index === currentIndex}
+                        active={index === currentImage}
                         onClickThumbnail={() => onClickThumbnail(index)}
                         path={image}
                     />
@@ -105,8 +105,8 @@ export default function ImageViewer({ images }) {
                     
                 }}>
                 <InnerImageZoom
-                    src={images[currentIndex]}
-                    zoomSrc={images[currentIndex]}
+                    src={images[currentImage]}
+                    zoomSrc={images[currentImage]}
                     hideHint
                     className='img-with-zoom-container'
                     zoomScale={0.75}

@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import ProductSpecsTable from "./ProductSpecsTable";
 import { isEmpty } from '../../../utils/dataTypeUtils/objectUtils';
 
+
 export default function ProductSpecs(props) {
     const {
         specs, // Product specifications

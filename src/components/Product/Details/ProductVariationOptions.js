@@ -71,6 +71,8 @@ export default function ProductVariationOptions(props) {
                                         )
                                     );
 
+                                    let isChosenItem = lodash.isEqual(currentVariationOption.values, choice.values);
+
                                     return (
                                         isOptionAvailable ? (
                                             <Grid item lg={2} md={4} xs={6} key={`variationOption-${choiceIndex}`}>
@@ -101,7 +103,7 @@ export default function ProductVariationOptions(props) {
                                                 >
                                                     <Box>
                                                         <Item
-                                                            isChosenItem={lodash.isEqual(currentVariationOption.values, choice.values)}
+                                                            isChosenItem={isChosenItem}
                                                             disabled={!isOptionAvailable}
                                                             onClick={() => changeProductOption(choice.values)}
                                                         >
