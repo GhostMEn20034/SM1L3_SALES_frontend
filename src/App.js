@@ -13,6 +13,7 @@ import SignUpRoutes from './routes/SignUp';
 import ResetPasswordRoutes from './routes/ResetPassword';
 import CartRoutes from './routes/Carts';
 import ProductRoutes from './routes/Products';
+import DealRoutes from './routes/Deals';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path='/signup/*' element={<SignUpRoutes />} />
             <Route path='/reset-password/*' element={<ResetPasswordRoutes />} />
             <Route path='/cart/*' element={<CartRoutes />} />
+            <Route path='/deals/*' element={<DealRoutes />} />
             <Route path='/*' element={
               <ProductRoutes />
             } />
