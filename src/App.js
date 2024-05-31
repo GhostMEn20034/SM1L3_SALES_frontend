@@ -14,7 +14,7 @@ import ResetPasswordRoutes from './routes/ResetPassword';
 import CartRoutes from './routes/Carts';
 import ProductRoutes from './routes/Products';
 import DealRoutes from './routes/Deals';
-
+import EventRoutes from './routes/Events';
 
 function App() {
 
@@ -36,6 +36,8 @@ function App() {
             <Route path='/reset-password/*' element={<ResetPasswordRoutes />} />
             <Route path='/cart/*' element={<CartRoutes />} />
             <Route path='/deals/*' element={<DealRoutes />} />
+            <Route path='/events/*' element={<EventRoutes />} />
+
             <Route path='/*' element={
               <ProductRoutes />
             } />
@@ -45,9 +47,7 @@ function App() {
               </PrivateRoute>
             } />
             <Route path='/' element={
-              <PrivateRoute>
                 <IndexPage />
-              </PrivateRoute>
             } />
             <Route path='/private' element={
               <PrivateRoute>

@@ -1,16 +1,16 @@
-import { Paper } from "@mui/material";
-import HistoryProductSliderItem from "./HistoryProductSliderItem";
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Mousewheel, Scrollbar } from "swiper/modules";
+
+import EventSliderItem from './EventSliderItem';
 
 // Css styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import '../../../styles/products/historyListSilder.css';
+import '../../../styles/events/eventListSlider.css';
 
-export default function ProductHistoryListSlider({ recentlyViewedItems }) {
+
+export default function EventListSlider({ events, }) {
     return (
         <Swiper
             scrollbar={{
@@ -42,35 +42,25 @@ export default function ProductHistoryListSlider({ recentlyViewedItems }) {
                     spaceBetween: 15
                 },
                 1200: {
-                    slidesPerView: 4,
+                    slidesPerView: 3,
                     spaceBetween: 15
                 }
             }}
         >
-            {recentlyViewedItems.map((recentlyViewedItem, index) => (
+            {events.map((event, index) => (
                 <SwiperSlide key={index} style={{
                     display: "flex",
                     padding: 2
                 }}>
-                    <Paper sx={{
-                        flexGrow: 1,
-                        paddingX: 1,
-                        paddingY: 1.5,
-                    }}>
-                        <HistoryProductSliderItem
-                            id={recentlyViewedItem?.item?.object_id}
-                            name={recentlyViewedItem?.item?.name}
-                            imageUrl={recentlyViewedItem?.item?.image}
-                            originalPrice={recentlyViewedItem?.item?.price}
-                            discountedPrice={recentlyViewedItem?.item?.discounted_price}
-                            discountPercentage={
-                                recentlyViewedItem?.item?.discount_percentage > 0 ?
-                                    recentlyViewedItem?.item?.discount_percentage : null
-                            }
-                        />
-                    </Paper>
+                    <EventSliderItem
+                        id={event._id}
+                        name={event.name}
+                        image={event.image}
+                    />
+
                 </SwiperSlide>
             ))}
         </Swiper >
-    );
+    )
 }
+

@@ -6,6 +6,7 @@ import UserContext from "../context/UserContext";
 import useAxios from "../utils/useAxios";
 import ProductHistoryListSlider from "../components/Product/History/ProductHistoryListSlider";
 import DealsOnIndexPage from "../components/Deals/DealsOnIndexPage";
+import EventListSlider from "../components/Event/SliderList/EventListSlider";
 
 
 
@@ -14,6 +15,7 @@ export default function IndexPage() {
 
     const [recentlyViewedItems, setRecentlyViewedItems] = useState(null);
     const [deals, setDeals] = useState(null);
+    const [events, setEvents] = useState(null);
 
     const recentlyViewedItemsPageSize = 12;
 
@@ -39,17 +41,30 @@ export default function IndexPage() {
 
     const getDealList = async () => {
         let queryParams = {
-            page_size: 70,
+            page_size: 35,
         };
-        
+
         try {
-            let response = await productsApi.get("/api/v1/deals/", {params: queryParams});
+            let response = await productsApi.get("/api/v1/deals/", { params: queryParams });
             let data = await response.data;
             setDeals(data?.items);
         } catch (err) {
             console.log("Something went wrong with Deals");
         }
+    };
 
+    const getEvents = async () => {
+        let queryParams = {
+            page_size: 6,
+        };
+
+        try {
+            let response = await productsApi.get('/api/v1/events/', {params: queryParams});
+            let data = await response.data;
+            setEvents(data?.items);
+        } catch (err) {
+            console.log("Something went wrong");
+        }
     };
 
     useEffect(() => {
@@ -60,10 +75,27 @@ export default function IndexPage() {
 
     useState(() => {
         getDealList();
+        getEvents();
     }, [])
 
     return (
         <Container disableGutters maxWidth="lg" sx={{ py: 2, }}>
+            {events?.length > 0 && (
+                <Box>
+                    <Box display="flex" alignItems="center">
+                        <Box sx={{ ml: "auto" }}>
+                            <Link component={RouterLink} to={"/events"}>
+                                <Typography variant="subtitle1">
+                                    See all events
+                                </Typography>
+                            </Link>
+                        </Box>
+                    </Box>
+                    <Box sx={{ mb: 4 }}>
+                        <EventListSlider events={events} />
+                    </Box>
+                </Box>
+            )}
             {recentlyViewedItems?.length > 0 && (
                 <Box>
                     <Box display="flex" alignItems="center">
@@ -72,7 +104,7 @@ export default function IndexPage() {
                                 <b>Your Recently Viewed Items</b>
                             </Typography>
                         </Box>
-                        <Box sx={{ ml: "auto", mr: "5%" }}>
+                        <Box sx={{ ml: "auto", mr: "2.5%" }}>
                             <Link component={RouterLink} to={"your-account/recently-viewed-items"}>
                                 <Typography variant="subtitle1">
                                     See all

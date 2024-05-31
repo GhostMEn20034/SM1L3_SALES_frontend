@@ -47,7 +47,9 @@ export default function ProductListPage() {
     // Price values for queryparams
     const queryMinPrice = searchParams.get("minPrice");
     const queryMaxPrice = searchParams.get("maxPrice");
+
     const category = searchParams.get("category");
+    const eventId = searchParams.get("eventId");
     const sortOption = searchParams.get("sortOption") || 'relevancy';
     const chosenFacets = searchParams.get("chosenFacets");
     const decodedChosenFacets = decodeChosenFacets(chosenFacets);
@@ -105,6 +107,7 @@ export default function ProductListPage() {
             priceMin: queryMinPrice,
             priceMax: queryMaxPrice,
             chosenFacets,
+            eventId,
         });
 
         let params = {
@@ -139,6 +142,7 @@ export default function ProductListPage() {
             priceMin: queryMinPrice,
             priceMax: queryMaxPrice,
             chosenFacets,
+            eventId,
         });
 
         let params = productFilters.getFilters();
