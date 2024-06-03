@@ -79,7 +79,8 @@ export function ChangeFullName({ userData }) {
             <Box sx={{ padding: 4 }}>
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="body1">
-                        If you want to change the full name associated with your Smile sales account, you may do so below. Be sure to click the <b>Save Changes</b> button when you are done.
+                        If you want to change the full name associated with your Smile sales account, you may do so below. <br />
+                        Be sure to click the <b>Save Changes</b> button when you are done.
                     </Typography>
                 </Box>
                 {success && (
@@ -129,7 +130,8 @@ export function ChangeDateOfBirth({ userData }) {
             <Box sx={{ padding: 3 }}>
                 <Box sx={{ mb: 1 }}>
                     <Typography variant="body1">
-                        If you want to change date of birth in your account, you may do so below. Be sure to click the <b>Save Changes</b> button when you are done.
+                        If you want to change date of birth in your account, you may do so below. <br />
+                        Be sure to click the <b>Save Changes</b> button when you are done.
                     </Typography>
                 </Box>
                 {success && (
@@ -177,7 +179,8 @@ export function ChangeSex({ userData }) {
             <Box sx={{ padding: 3 }}>
                 <Box sx={{ mb: 1 }}>
                     <Typography variant="body1">
-                        If you want to change sex in your account, you may do so below. Be sure to click the <b>Save Changes</b> button when you are done.
+                        If you want to change sex in your account, you may do so below.<br />
+                        Be sure to click the <b>Save Changes</b> button when you are done.
                     </Typography>
                 </Box>
                 {success && (
@@ -240,7 +243,8 @@ export function ChangePhoneNumber({ userData }) {
             <Box sx={{ padding: 3 }}>
                 <Box sx={{ mb: 1 }}>
                     <Typography variant="body1">
-                        If you want to change phone number associated with your Smile sales account, you may do so below. Be sure to click the <b>Save Changes</b> button when you are done.
+                        If you want to change phone number associated with your Smile sales account, you may do so below. <br />
+                        Be sure to click the <b>Save Changes</b> button when you are done.
                     </Typography>
                 </Box>
                 {success && (
@@ -304,7 +308,8 @@ export function ChangePassword() {
             <Box sx={{ padding: 3 }}>
                 <Box sx={{ mb: 1 }}>
                     <Typography variant="body1">
-                        If you want to change password associated with your Smile sales account, you may do so below. Be sure to click the <b>Save Changes</b> button when you are done.
+                        If you want to change password associated with your Smile sales account, you may do so below.<br />
+                        Be sure to click the <b>Save Changes</b> button when you are done. <br />
                         Note that new password should contain <b>at least 8 characters long</b>.
                     </Typography>
                 </Box>

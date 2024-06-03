@@ -59,10 +59,10 @@ export default function AddressesList() {
                 {open && choosenID && (
                     <DeleteAddress open={open} setOpen={setOpen} onSubmit={handleSubmitRemoval} address={addresses.find(address => address.id === choosenID)} />
                 )}
-                <Grid container gap={2}>
-                    <Grid item xs={3.15}>
+                <Grid container spacing={2}>
+                    <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
                         <Link to="add" style={{ textDecoration: 'none' }}>
-                            <Paper sx={{ height: "250px", width: "300px", borderRadius: "10px" }} elevation={3}>
+                            <Paper sx={{ height: "250px", borderRadius: "10px" }} elevation={3}>
                                 <Box
                                     display="flex"
                                     alignItems="center"
@@ -86,8 +86,8 @@ export default function AddressesList() {
                         </Link>
                     </Grid>
                     {addresses.map((address, index) => (
-                        <Grid item key={index} xs={3.15}>
-                            <Paper sx={{ height: "250px", width: "300px", borderRadius: "10px" }} elevation={3}>
+                        <Grid item key={index} xl={3} lg={3} md={4} sm={6} xs={12}>
+                            <Paper sx={{ maxHeight: "250px", borderRadius: "10px" }} elevation={3}>
                                 <Box padding={3}>
                                     <Box>
                                         <Typography variant="subtitle1"><b>{address.first_name} {address.last_name}</b></Typography>

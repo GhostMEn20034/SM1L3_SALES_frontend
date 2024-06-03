@@ -12,12 +12,11 @@ export default function HomePageOption({name, description, icon, nextDestanation
     const href = location.pathname + nextDestanation;
 
     return (
-        <Card sx={{ maxWidth: 345}}>
+        <Card>
             <CardActionArea component={Link} to={href}>
                 <Box display="flex"
                     justifyContent="center"
                     alignItems="center"
-                    // sx={{backgroundColor: "#121212"}}
                     >
                     {icon}
                 </Box>

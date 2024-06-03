@@ -1,5 +1,5 @@
 import PersonalInfo from "../../components/PersonalInfoComponents/PersonalInfo";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
 import { useLocation } from "react-router-dom";
 import { createBreadCrumbDataFromUrl } from "../../utils/breadCrumb/createBreadCrumbData";
@@ -9,8 +9,14 @@ export default function PersonalInfoPage() {
     const breadCrumbData = createBreadCrumbDataFromUrl(location.pathname);
 
     return (
-        <Box display="flex" justifyContent="center">
-            <Box sx={{width: "40%", mb: 4}}>
+        <Container
+            maxWidth='lg'
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+            }}
+        >
+            <Box sx={{ mb: 4 }}>
                 <Box
                     marginTop={2}
                 >
@@ -24,6 +30,6 @@ export default function PersonalInfoPage() {
                     <PersonalInfo />
                 </Box>
             </Box>
-        </Box>
+        </Container>
     );
 } 

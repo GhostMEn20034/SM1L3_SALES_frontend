@@ -67,7 +67,7 @@ export default function AddAddress() {
     return (
         <>
             <Box sx={{ mt: 2 }}>
-                <Box>
+                <Box sx={{maxWidth: 315}}>
                     <CountrySelect value={country} setValue={setCountry} />
                 </Box>
                 <Box sx={{ mt: 2 }}>
@@ -84,9 +84,9 @@ export default function AddAddress() {
                         May be used to assist delivery
                     </Typography>
                 </Box>
-                <Grid container sx={{ mt: 2, width: "1000px" }} gap={2} gridTemplateColumns="repeat(2, 1fr)">
+                <Grid container sx={{ mt: 1, maxWidth: "1000px" }} spacing={2} >
                     {fields.map(field => (
-                        <Grid item key={field.label} sx={{ width: "400px" }}>
+                        <Grid item key={field.label} md={6} sm={12} xs={12}>
                             <TextField id={field.id} label={field.label} error={errors[field.id] !== undefined} helperText={errors ? errors[field.id] : ""}
                                 value={field.value} onChange={
                                     (e) => {

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Alert, Box, Divider, Link, Paper, Typography } from "@mui/material";
+import { Alert, Box, Divider, Link, Paper, Typography, Grid } from "@mui/material";
 
 
 import { currencySymbol } from "../../utils/consts";
@@ -75,26 +75,26 @@ export default function CartItemListPage() {
 
     return (
         cartData && (
-            <Box sx={{ padding: 3 }}>
-                <Box display={"flex"} justifyContent="center">
-                    <Box sx={{ minWidth: "850px", maxWidth: "1200px" }}>
-
-                        <Paper sx={{ px: 3, py: 2 }}>
-                            <Box sx={{ mb: 1 }}>
-                                <Typography variant="h4">
-                                    Shopping Cart
+            <Box sx={{ py: 2, px: 5 }} display="flex" flexDirection="column" justifyContent='center'>
+                <Box>
+                    <Box sx={{ mb: 1 }}>
+                        <Typography variant="h4">
+                            Shopping Cart
+                        </Typography>
+                    </Box>
+                    {cartData?.cart_items?.length > 0 && (
+                        <Box sx={{ mb: 2 }}>
+                            <Link component="button" underline={"hover"} onClick={clearCart}>
+                                <Typography>
+                                    Clear All Items
                                 </Typography>
-                            </Box>
-                            {cartData?.cart_items?.length > 0 && (
-                                <Box sx={{ mb: 2 }}>
-                                    <Link component="button" underline={"hover"} onClick={clearCart}>
-                                        <Typography>
-                                            Clear All Items
-                                        </Typography>
-                                    </Link>
-                                </Box>
-                            )}
-                            <Divider />
+                            </Link>
+                        </Box>
+                    )}
+                </Box>
+                <Grid container spacing={2} sx={{ maxWidth: "1200px" }}>
+                    <Grid item  md={8.7} sm={12} xs={12}>
+                        <Paper sx={{ px: 3, py: 2 }}>
                             {alertMessage && (
                                 <Box my={2}>
                                     <Alert
@@ -128,13 +128,13 @@ export default function CartItemListPage() {
                                 The Cart is a temporary place to store a list of your items and reflects each item's most recent price.
                             </Typography>
                         </Box>
-                    </Box>
-                    <Box sx={{ maxWidth: "300px", ml: 5 }}>
+                    </Grid>
+                    <Grid item md={3} sm={12} xs={12}>
                         <Paper sx={{ width: '100%', bgcolor: 'background.paper', padding: 2.5 }}>
                             <ProceedToCheckout cartItemCount={cartData.cart?.count} total={cartData.cart?.total} user={userInfo?.user} />
                         </Paper>
-                    </Box>
-                </Box>
+                    </Grid>
+                </Grid>
             </Box>
         )
     );

@@ -57,8 +57,8 @@ export default function ChangePersonalInfoPage() {
     }
 
     return (
-        <Box display={"flex"} justifyContent={"center"}>
-            <Box sx={{width: "40%"}}>
+        <Box display={"flex"} justifyContent={"center"} padding={1}>
+            <Box>
                 <Box
                     marginTop={2}
                 >

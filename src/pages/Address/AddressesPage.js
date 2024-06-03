@@ -10,8 +10,8 @@ export default function AddressesPage() {
     const location = useLocation();
     const breadCrumbData = createBreadCrumbDataFromUrl(location.pathname);
     return (
-        <Box display="flex" justifyContent="center">
-            <Box sx={{ my: 4, width: "90%" }}>
+        <Box display="flex" justifyContent="center" py={1} px={6}>
+            <Box sx={{ my: 4, width: "100%" }}>
                 <Box sx={{ mb: 1 }}>
                     <BreadCrumb breadCrumbData={breadCrumbData} />
                 </Box>

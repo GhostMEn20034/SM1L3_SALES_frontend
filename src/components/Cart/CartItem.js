@@ -8,14 +8,14 @@ import CartItemActionRow from "./CartItemActionRow";
 
 export default function CartItem(props) {
     return (
-        <Box display={"flex"}>
+        <Box display={"flex"} width="100%">
             <Box>
                 <Link component={RouterLink} to={`/item/${props.product?.object_id}`} underline="none" color="inherit">
                     <img
                         alt="No Product Img"
                         src={props.product?.image}
                         height={150}
-                        width={180}
+                        width={150}
                         style={{ objectFit: 'scale-down' }}
                     />
                 </Link>
@@ -61,7 +61,7 @@ export default function CartItem(props) {
                     </Box>
                 )}
             </Box>
-            <Box display="flex" justifyContent="end" sx={{ ml: 3 }}>
+            <Box display="flex" justifyContent="end" sx={{ ml: "auto" }}>
                 <ProductPrice price={props.product?.price} discountRate={props.product?.discount_rate} />
             </Box>
         </Box>

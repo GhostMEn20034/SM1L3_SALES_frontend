@@ -11,7 +11,7 @@ export default function CountrySelect({value, setValue}) {
     };
 
     return (
-        <Box sx={{ width: 300 }}>
+        <Box>
             <FormControl fullWidth>
                 <InputLabel id="country-select-label" size='small'>Country</InputLabel>
                 <Select
