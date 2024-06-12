@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import { getDisplayNameForRegularFacet } from '../../../utils/products/productFiltering/chosenFacetsServices';
+import { getDisplayNameForRangeFacet } from '../../../utils/products/productFiltering/facetDisplayName';
 import { Chip, Typography } from '@mui/material';
 
 export default function ChosenFacetsList(props) {
@@ -26,9 +27,7 @@ export default function ChosenFacetsList(props) {
          * If isRange is true, returns user-friendly view of chosen range facet.
          */
         if (isRange) {
-            let rangeToDisplayNameMappings = props.facetMetadata?.[facetCode]?.range_to_display_name;
-            let displayName = rangeToDisplayNameMappings?.[facetValue?.gteq];
-            return displayName;
+            return getDisplayNameForRangeFacet(facetCode, facetValue, props.facetMetadata)
         } else {
             return getDisplayNameForRegularFacet(facetValue, facetUnit);
         }

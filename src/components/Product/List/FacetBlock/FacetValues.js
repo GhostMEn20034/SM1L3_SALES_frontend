@@ -40,8 +40,13 @@ export default function FacetValues(props) {
                             )}
                             size="small" sx={{ padding: 0.2, margin: "0px" }}
                         />
+                        {/* User friendly representation of the facet object */}
                         <Typography variant="body2">
-                            {facetValue.display_name}
+                            {
+                                !props.is_range ?
+                                    props.displayNameFunction(facetValue.value, facetValue.unit) :
+                                    props.displayNameFunction(props.code, facetValue.value)
+                            }
                         </Typography>
                         <Typography variant="body2" sx={{ ml: 0.5, color: "grey" }}>
                             ({facetValue.count})

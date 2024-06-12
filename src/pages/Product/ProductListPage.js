@@ -240,11 +240,11 @@ export default function ProductListPage() {
                                 </Box>
                                 <Box>
                                     <FacetList
-
                                         facets={facetList}
                                         chosenFacets={decodedChosenFacets}
                                         insertFacetObjectToChosenFacets={insertFacetObjectToChosenFacets}
                                         deleteChosenFacetGroup={deleteChosenFacetGroup}
+                                        facetMetadata={facetMetadata}
                                     />
                                 </Box>
                             </Box>

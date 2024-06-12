@@ -7,6 +7,7 @@ export default function FacetList(props) {
         props.facets.map((facet, i) => (
             <Box key={i} sx={{ mt: 1 }}>
                 <FacetItem facet={facet}
+                    facetMetadata={props.facetMetadata}
                     chosenFacets={props.chosenFacets}
                     insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
                     deleteChosenFacetGroup={props.deleteChosenFacetGroup}

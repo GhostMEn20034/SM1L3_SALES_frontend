@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { Paper, Typography, Box, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
+import { getDisplayNameForRegularFacet } from '../../../utils/products/productFiltering/facetDisplayName';
 import HtmlTooltip from "../../CommonComponents/HtmlTooltip";
 
 
@@ -63,7 +64,14 @@ export default function ProductSpecsTable(props) {
                     {productSpecs.map((productSpec, index) => (
                         <SingleProductSpec
                             attributeName={productSpec?.name}
-                            displayName={productSpec?.display_name}
+                            displayName={
+                                productSpec?.display_name ?
+                                    productSpec?.display_name :
+                                    getDisplayNameForRegularFacet(
+                                        productSpec?.value, productSpec?.unit, 
+                                        productSpec?.type, true
+                                    )
+                            }
                             explanation={productSpec?.explanation}
                             key={`SingleProductSpec-${index}`}
                         />

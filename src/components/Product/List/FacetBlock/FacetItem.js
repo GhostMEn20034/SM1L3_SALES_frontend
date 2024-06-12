@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import FacetValues from "./FacetValues";
 import ExpandMore from "../../../CommonComponents/ExpandMore";
+import { getDisplayNameForRangeFacet, getDisplayNameFunction } from '../../../../utils/products/productFiltering/facetDisplayName';
 
 
 export default function FacetItem(props) {
@@ -16,6 +17,14 @@ export default function FacetItem(props) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    const getDisplayNameFunc = () => {
+        if (props.facet?.is_range) {
+            return (code, value) => getDisplayNameForRangeFacet(code, value, props.facetMetadata)
+        } else {
+            return getDisplayNameFunction(props.facet?.type)
+        }
+    }
 
     return (
         <Box>
@@ -65,6 +74,7 @@ export default function FacetItem(props) {
                         is_range={props.facet?.is_range}
                         chosenFacets={props.chosenFacets}
                         insertFacetObjectToChosenFacets={props.insertFacetObjectToChosenFacets}
+                        displayNameFunction={getDisplayNameFunc()}
                     />
                 </Box>
             </Collapse >

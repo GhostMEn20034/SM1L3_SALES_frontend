@@ -17,10 +17,10 @@ export default function AddressesList() {
     const navigate = useNavigate()
 
     const handleEditButton = id => {
-        navigate({pathname: 'edit', search: `?addressID=${id}`})
+        navigate({ pathname: 'edit', search: `?addressID=${id}` })
     }
 
-    const handleDeleteButton= (id) => {
+    const handleDeleteButton = (id) => {
         setChoosenID(id);
         setOpen(true);
     }
@@ -62,7 +62,7 @@ export default function AddressesList() {
                 <Grid container spacing={2}>
                     <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
                         <Link to="add" style={{ textDecoration: 'none' }}>
-                            <Paper sx={{ height: "250px", borderRadius: "10px" }} elevation={3}>
+                            <Paper sx={{ height: "300px", borderRadius: "10px" }} elevation={3}>
                                 <Box
                                     display="flex"
                                     alignItems="center"
@@ -87,8 +87,8 @@ export default function AddressesList() {
                     </Grid>
                     {addresses.map((address, index) => (
                         <Grid item key={index} xl={3} lg={3} md={4} sm={6} xs={12}>
-                            <Paper sx={{ maxHeight: "250px", borderRadius: "10px" }} elevation={3}>
-                                <Box padding={3}>
+                            <Paper sx={{ borderRadius: "10px", minHeight: "300px", display: "flex", flexDirection: "column" }} elevation={3}>
+                                <Box padding={3} flexGrow={1}>
                                     <Box>
                                         <Typography variant="subtitle1"><b>{address.first_name} {address.last_name}</b></Typography>
                                     </Box>
@@ -99,9 +99,9 @@ export default function AddressesList() {
                                         <Typography variant="subtitle1">{address.city}, {address.region} {address.postal_code}</Typography>
                                     </Box>
                                     {address.apartment_number && (
-                                    <Box>
-                                        <Typography variant="subtitle1">Apartment number: {address.apartment_number}</Typography>
-                                    </Box>
+                                        <Box>
+                                            <Typography variant="subtitle1">Apartment number: {address.apartment_number}</Typography>
+                                        </Box>
                                     )}
                                     <Box>
                                         <Typography variant="subtitle1">{address.country.name}</Typography>
@@ -109,20 +109,19 @@ export default function AddressesList() {
                                     <Box>
                                         <Typography variant="subtitle1">Phone number: {address.phone_number}</Typography>
                                     </Box>
-
-                                    <Box sx={{mt: address.apartment_number !== "" ? 1 : 4}}>
+                                </Box>
+                                <Box sx={{ px: 3, mt: "auto", mb: 0.5 }}>
                                     <IconButton onClick={() => handleEditButton(address.id)}>
                                         <ModeEditOutlineOutlinedIcon />
                                     </IconButton>
                                     <IconButton onClick={() => handleDeleteButton(address.id)}>
                                         <DeleteOutlineOutlinedIcon />
                                     </IconButton>
-                                    </Box>
                                 </Box>
                             </Paper>
                         </Grid>
                     ))}
-                    
+
                 </Grid>
             </Box>
         </>
