@@ -23,9 +23,9 @@ import AuthContext from '../context/AuthContext';
 import UserContext from '../context/UserContext';
 
 
-const pages = ['Catalogue', 'Orders'];
+const appBarPages = ['Shop By Category', 'Orders'];
 const settings = ['Account', 'Orders', 'Dashboard'];
-const app_bar_links = ['/private', '/your-account/orders'];
+const appBarLinks = ['/categories', '/your-account/orders'];
 const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
 
 function AppBarMenu() {
@@ -111,7 +111,7 @@ function AppBarMenu() {
                     display: { xs: 'block', md: 'none' },
                   }}
                 >
-                  {pages.map((page, index) => (
+                  {appBarPages.map((page, index) => (
                     <Link underline="none" key={page} component={RouterLink} to={setting_links[index]}>
                       <MenuItem key={page} onClick={handleCloseNavMenu}>
                         <Typography textAlign="center" sx={{ color: '#D5D507' }}>{page}</Typography>
@@ -126,17 +126,17 @@ function AppBarMenu() {
                 </Menu>
 
               </Box>
-              <Box sx={{ mr: 5, ml: 5, width: "40%", minWidth: "250px"}}>
+              <Box sx={{ mr: 3, ml: 3, width: "40%", minWidth: "250px" }}>
                 <SearchAutocomplete />
               </Box>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page, index) => (
+                {appBarPages.map((page, index) => (
                   <Button
                     key={page}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: '#D5D507', display: 'block', marginRight: 2 }}
                     component={RouterLink}
-                    to={app_bar_links[index]}
+                    to={appBarLinks[index]}
                   >
                     {page}
                   </Button>

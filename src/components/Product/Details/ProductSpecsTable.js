@@ -69,7 +69,7 @@ export default function ProductSpecsTable(props) {
                                     productSpec?.display_name :
                                     getDisplayNameForRegularFacet(
                                         productSpec?.value, productSpec?.unit, 
-                                        productSpec?.type, true
+                                        productSpec?.type, false
                                     )
                             }
                             explanation={productSpec?.explanation}

@@ -7,7 +7,7 @@ export const getDisplayNameFunction = (type, listUnwinded = true) => {
         case "trivariate":
             return (value, unit) => `${Object.values(value).join(" x ")}${unit ? " " + unit : ""}`;
         case "list":
-            return !listUnwinded ? (value, _) => value : (value, _) => value.join(", ");
+            return listUnwinded ? (value, _) => value : (value, _) => value.join(", ");
         case "string":
         default:
             return (value, _) => value;

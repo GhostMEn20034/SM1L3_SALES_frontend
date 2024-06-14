@@ -15,6 +15,7 @@ import CartRoutes from './routes/Carts';
 import ProductRoutes from './routes/Products';
 import DealRoutes from './routes/Deals';
 import EventRoutes from './routes/Events';
+import CategoryRoutes from './routes/Categories';
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
             <Route path='/cart/*' element={<CartRoutes />} />
             <Route path='/deals/*' element={<DealRoutes />} />
             <Route path='/events/*' element={<EventRoutes />} />
-
+            <Route path='/categories/*' element={<CategoryRoutes />} />
             <Route path='/*' element={
               <ProductRoutes />
             } />
@@ -49,11 +50,6 @@ function App() {
             <Route path='/' element={
                 <IndexPage />
             } />
-            <Route path='/private' element={
-              <PrivateRoute>
-                <h1>Hi from Ohio!</h1>
-              </PrivateRoute>}
-            />
           </Routes>
         </UserProvider>
       </AuthProvider>
