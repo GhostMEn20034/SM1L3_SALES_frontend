@@ -1,15 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Box, TextField, Button, Grid, Typography } from "@mui/material";
 import CountrySelect from "./CountrySelect";
 import { MuiTelInput } from "mui-tel-input";
-import UserContext from "../../context/UserContext";
-import useAxios from "../../utils/useAxios";
-import { useNavigate } from "react-router-dom";
 
-export default function AddAddress() {
-    const { userInfo } = useContext(UserContext);
+export default function AddAddress(props) {
 
-    const [errors, setErrors] = useState({});
+    const { userInfo, errors, setErrors, createAddress } = props;
+
     const [country, setCountry] = useState("AT");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -32,30 +29,6 @@ export default function AddAddress() {
         { id: "postal_code", label: "Postal code", value: postalCode, onChange: setPostalCode },
     ];
 
-    const api = useAxios();
-    const navigate = useNavigate();
-
-    const createAddress = async () => {
-        try {
-            await api.post('/api/addresses/', {
-                country: country,
-                phone_number: phoneNumber,
-                first_name: firstName,
-                last_name: lastName,
-                city: city,
-                region: region,
-                street: street,
-                house_number: houseNumber,
-                apartment_number: apartmentNumber,
-                postal_code: postalCode
-            });
-
-            navigate('/your-account/addresses');
-        } catch (error) {
-            setErrors(error.response.data);
-        }
-    }
-
     useEffect(() => {
         if (userInfo?.user && Object.keys(userInfo.user).length > 0) {
             setFirstName(userInfo.user.first_name);
@@ -67,7 +40,7 @@ export default function AddAddress() {
     return (
         <>
             <Box sx={{ mt: 2 }}>
-                <Box sx={{maxWidth: 315}}>
+                <Box sx={{ maxWidth: 315 }}>
                     <CountrySelect value={country} setValue={setCountry} />
                 </Box>
                 <Box sx={{ mt: 2 }}>
@@ -103,7 +76,10 @@ export default function AddAddress() {
                 </Grid>
                 <Box>
                     <Button
-                        onClick={createAddress}
+                        onClick={() => createAddress({
+                            country, phoneNumber, firstName, lastName, city,
+                            region, street, houseNumber, apartmentNumber, postalCode
+                        })}
                         sx={{ mt: 3, borderRadius: "10px", color: "black", backgroundColor: "#ebeb05", ":hover": { backgroundColor: "#dede04" } }}>
                         Add address
                     </Button>

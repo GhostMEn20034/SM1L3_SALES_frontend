@@ -11,13 +11,15 @@ export default function CartItemList(props) {
             {props.cartItems.map((cartItem) => (
                 <Fragment key={cartItem.id}>
                     <ListItem>
-                        <CartItem
-                            product={cartItem.product}
-                            id={cartItem.id}
-                            itemQuantity={cartItem.quantity}
-                            changeCartItemQuantity={props.changeCartItemQuantity}
-                            deleteCartItem={props.deleteCartItem}
-                        />
+                            <CartItem
+                                product={cartItem.product}
+                                checkedCartItems={props.checkedCartItems}
+                                id={cartItem.id}
+                                itemQuantity={cartItem.quantity}
+                                checkCartItem={props.checkCartItem}
+                                changeCartItemQuantity={props.changeCartItemQuantity}
+                                deleteCartItem={props.deleteCartItem}
+                            />
                     </ListItem>
                     <Divider />
                 </Fragment>

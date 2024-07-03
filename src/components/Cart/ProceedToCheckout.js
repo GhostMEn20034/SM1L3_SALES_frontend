@@ -15,6 +15,8 @@ export default function ProceedToCheckout(props) {
             <Box display={"flex"} justifyContent={"center"} sx={{ mt: 2 }}>
                 {props.user ? (
                     <Button variant="contained" size="small"
+                        disabled={props.checkedCartItems?.length < 1}
+                        onClick={props.onProceedCheckout}
                         sx={{
                             backgroundColor: '#000000',
                             ":hover": { backgroundColor: "#1f1f1f" },

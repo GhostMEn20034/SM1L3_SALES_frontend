@@ -1,14 +1,26 @@
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography, Link, Checkbox } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 import ProductStock from "../Product/ProductStock";
 import ProductPrice from "./ProductPrice";
 import CartItemActionRow from "./CartItemActionRow";
+import { canProductBeSold } from "../../utils/products/productChecks";
 
 export default function CartItem(props) {
+
     return (
         <Box display={"flex"} width="100%">
+            <Box display="flex" alignItems="center">
+                <Checkbox
+                    checked={
+                        props.checkedCartItems?.includes(props.product?.object_id)
+                    }
+                    disabled={!canProductBeSold(props.product?.stock, props.product?.for_sale)}
+                    onChange={() => props.checkCartItem(props.product?.object_id)}
+                    sx={{ mr: 4 }}
+                />
+            </Box>
             <Box>
                 <Link component={RouterLink} to={`/item/${props.product?.object_id}`} underline="none" color="inherit">
                     <img

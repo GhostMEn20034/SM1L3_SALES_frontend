@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Box, Divider, Link, Paper, Typography, Grid } from "@mui/material";
+import { useLocation, useNavigate, createSearchParams } from "react-router-dom";
 
 
 import { currencySymbol } from "../../utils/consts";
@@ -8,28 +9,54 @@ import ProceedToCheckout from "../../components/Cart/ProceedToCheckout";
 import CartEmpty from "../../components/Cart/CartEmpty";
 import UserContext from "../../context/UserContext";
 import useAxios from "../../utils/useAxios";
-import { useLocation } from "react-router-dom";
+import { canProductBeSold } from "../../utils/products/productChecks";
+
 
 
 export default function CartItemListPage() {
     const api = useAxios('users');
     const location = useLocation();
     const stateData = location.state;
+    const navigate = useNavigate();
 
     const { userInfo, refreshUserInfo } = useContext(UserContext);
 
+    const [checkedCartItems, setCheckedCartItems] = useState([]);
     const [cartData, setCartData] = useState(null);
     const [alertMessage, setAlertMessage] = useState(null || stateData?.alertMessage);
-
 
     const getCartData = async () => {
         try {
             let response = await api.get(`/api/carts/${userInfo.cart.cart_uuid}/`);
             let data = await response.data;
             setCartData(data);
+            let cartItems = data.cart_items ? data.cart_items : [];
+            if (cartItems.length > 0) {
+                setCheckedCartItems(() => {
+                    let newCheckedCartItems = [];
+                    for (let cartItem of cartItems) {
+                        if (canProductBeSold(cartItem.product.stock, cartItem.product.for_sale)) {
+                            newCheckedCartItems.push(cartItem.product.object_id);
+                        }
+                    }
+                    return newCheckedCartItems;
+                });
+            }
         } catch (e) {
             console.log("Something went wrong");
         }
+    };
+
+    const checkCartItem = (productId) => {
+        setCheckedCartItems((prevValues) => {
+            if (prevValues.includes(productId)) {
+                // If productId is already in the array, remove it
+                return prevValues.filter(item => item !== productId);
+            } else {
+                // If productId is not in the array, add it
+                return [...prevValues, productId];
+            }
+        });
     };
 
     const changeCartItemQuantity = async (cartItemId, newQuantity, productName) => {
@@ -66,6 +93,14 @@ export default function CartItemListPage() {
         }
     };
 
+    const proceedToCheckout = () => {
+        if (checkedCartItems.length > 0) {
+            let params = {
+                productIds: checkedCartItems.join(','),
+            };
+            navigate({ pathname: "/orders/checkout", search: createSearchParams(params).toString() });
+        }
+    };
 
     useEffect(() => {
         if (userInfo) {
@@ -92,23 +127,33 @@ export default function CartItemListPage() {
                         </Box>
                     )}
                 </Box>
-                <Grid container spacing={2} sx={{ maxWidth: "1200px" }}>
-                    <Grid item  md={8.7} sm={12} xs={12}>
+                <Grid container spacing={2}>
+                    <Grid item md={8.5} sm={12} xs={12}>
+                        <Box sx={{ mb: 2, width: "100%" }}>
+                            <Alert severity="info">
+                                <Typography variant="body2">
+                                    Before proceeding to checkout, please review the items in your cart. <br />
+                                    Make sure to select the products you want to purchase.
+                                </Typography>
+                            </Alert>
+                        </Box>
+                        {alertMessage && (
+                            <Box my={2}>
+                                <Alert
+                                    severity={alertMessage.severity}
+                                    onClose={() => setAlertMessage(null)}
+                                >
+                                    {alertMessage.message}
+                                </Alert>
+                            </Box>
+                        )}
                         <Paper sx={{ px: 3, py: 2 }}>
-                            {alertMessage && (
-                                <Box my={2}>
-                                    <Alert
-                                        severity={alertMessage.severity}
-                                        onClose={() => setAlertMessage(null)}
-                                    >
-                                        {alertMessage.message}
-                                    </Alert>
-                                </Box>
-                            )}
                             <Box>
                                 {cartData.cart_items?.length > 0 ? (
                                     <CartItemList
                                         cartItems={cartData.cart_items ? cartData.cart_items : []}
+                                        checkedCartItems={checkedCartItems}
+                                        checkCartItem={checkCartItem}
                                         changeCartItemQuantity={changeCartItemQuantity}
                                         deleteCartItem={deleteCartItem}
                                     />
@@ -129,10 +174,17 @@ export default function CartItemListPage() {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item md={3} sm={12} xs={12}>
-                        <Paper sx={{ width: '100%', bgcolor: 'background.paper', padding: 2.5 }}>
-                            <ProceedToCheckout cartItemCount={cartData.cart?.count} total={cartData.cart?.total} user={userInfo?.user} />
+                    <Grid item lg={3.35} md={3.35} sm={12} xs={12}>
+                        <Paper sx={{ bgcolor: 'background.paper', padding: 2.5 }}>
+                            <ProceedToCheckout
+                                cartItemCount={cartData.cart?.count}
+                                total={cartData.cart?.total}
+                                user={userInfo?.user}
+                                checkedCartItems={checkedCartItems}
+                                onProceedCheckout={proceedToCheckout}
+                            />
                         </Paper>
+
                     </Grid>
                 </Grid>
             </Box>

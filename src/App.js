@@ -16,19 +16,25 @@ import ProductRoutes from './routes/Products';
 import DealRoutes from './routes/Deals';
 import EventRoutes from './routes/Events';
 import CategoryRoutes from './routes/Categories';
+import PaymentRoutes from './routes/Payments';
+import OrderRoutes from './routes/Orders';
+
 
 function App() {
 
   const location = useLocation();
 
-  const authRoutes = ['/signin', '/signup', '/signup/confirm', '/reset-password/request', '/reset-password/confirm', '/change-email/verify'];
+  const nonAppBarRoutes = [
+    '/signin', '/signup', '/signup/confirm', '/reset-password/request', 
+    '/reset-password/confirm', '/change-email/verify', '/orders/checkout',
+  ];
 
   return (
     <>
 
       <AuthProvider>
         <UserProvider>
-          {!authRoutes.includes(location.pathname) && <AppBarMenu />}
+          {!nonAppBarRoutes.includes(location.pathname) && <AppBarMenu />}
           <Routes>
             <Route path='/signin' element={<Login />} />
             <Route path='/your-account/*' element={<AccountRoutes />} />
@@ -39,6 +45,8 @@ function App() {
             <Route path='/deals/*' element={<DealRoutes />} />
             <Route path='/events/*' element={<EventRoutes />} />
             <Route path='/categories/*' element={<CategoryRoutes />} />
+            <Route path='/payments/*' element={<PaymentRoutes />} />
+            <Route path='/orders/*' element={<OrderRoutes />} />
             <Route path='/*' element={
               <ProductRoutes />
             } />
