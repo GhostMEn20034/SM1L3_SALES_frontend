@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Button } from "@mui/material";
+import { Box, Container, Grid, Button, CircularProgress } from "@mui/material";
 import useAxios from "../../utils/useAxios";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -33,7 +33,6 @@ export default function CheckoutPage() {
     const [chosenAddressDisplayName, setChosenAddressDisplayName] = useState(null); // User-friendly representaion of the shipping address
 
     const [addressErrors, setAddressErrors] = useState({});
-    const [errorMsg, setErrorMsg] = useState(null);
     const [createOrderLoading, setCreateOrderLoading] = useState(false);
     const [creationEssentialsLoading, setCreationEssentialsLoading] = useState(false);
 
@@ -43,16 +42,26 @@ export default function CheckoutPage() {
     const ordersApi = useAxios("orders");
     const usersApi = useAxios("users");
 
+    let productIds = searchParams.get("productIds");
+    productIds = productIds ? productIds.split(",") : null;
+
     // Function to create a payment and an order
-    const createOrderWithPayPal = async () => {
+    const createOrderAndPayment = async () => {
+        let body = {
+            address_id: chosenAddress,
+            product_ids: productIds,
+            payment_method: paymentMethod,
+        };
+
         setCreateOrderLoading(true);
 
         try {
-            let response = await ordersApi.post("/api/v1/orders/");
+            let response = await ordersApi.post("/api/v1/orders/", body);
             let data = await response.data;
             window.location.assign(data.checkout_link);
         } catch (e) {
-            setErrorMsg("Unable to create the order");
+            console.log(e.response.data);
+            console.log("Unable to create an order");
         }
 
         setCreateOrderLoading(false);
@@ -62,11 +71,11 @@ export default function CheckoutPage() {
     const getOrderCreationEssentials = async () => {
         setCreationEssentialsLoading(true);
         let cartItemsParams = {
-            product_ids: searchParams.get("productIds")
+            product_ids: searchParams.get("productIds"),
         };
 
         try {
-            let ordersApiResponse = await ordersApi.get("/api/v1/orders/creation-essentials",);
+            let ordersApiResponse = await ordersApi.get("/api/v1/orders/creation-essentials/",);
             let ordersApiData = await ordersApiResponse.data;
 
             let usersApiResponse = await usersApi.get(`/api/carts/${userInfo?.cart?.cart_uuid}/items/`,
@@ -83,7 +92,6 @@ export default function CheckoutPage() {
             }
 
         } catch (e) {
-            console.log(e);
             console.log("Unable to get addresses and cart items");
         }
         setCreationEssentialsLoading(false);
@@ -257,7 +265,7 @@ export default function CheckoutPage() {
                     <CompleteOrderStep
                         paymentMethod={paymentMethod}
                         address={chosenAddressDisplayName}
-                        completePayment={() => "Hello"}
+                        completePayment={createOrderAndPayment}
                     />
                 </Box>
                 <Box mt={3} display="flex" justifyContent="space-between">
@@ -283,6 +291,14 @@ export default function CheckoutPage() {
         }
 
     }, [userInfo]);
+
+    if (createOrderLoading) {
+        return (
+            <Box display="flex" alignItems="center" justifyContent="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Container sx={{

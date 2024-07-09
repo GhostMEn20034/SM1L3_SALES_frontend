@@ -9,7 +9,7 @@ export default function PaymentRoutes() {
             <Route path='success' element={
                 <SuccessPaymentPage />
             } />
-            <Route path='cancelled' element={
+            <Route path='canceled' element={
                 <CancelledPaymentPage />
             } />
         </Routes>
