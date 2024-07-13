@@ -25,8 +25,8 @@ import UserContext from '../context/UserContext';
 
 const appBarPages = ['Shop By Category', 'Orders'];
 const settings = ['Account', 'Orders', 'Dashboard'];
-const appBarLinks = ['/categories', '/your-account/orders'];
-const setting_links = ['/your-account', '/your-account/orders', '/dashboard'];
+const appBarLinks = ['/categories', '/your-account/order-history'];
+const setting_links = ['/your-account', '/your-account/order-history', '/dashboard'];
 
 function AppBarMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -112,7 +112,7 @@ function AppBarMenu() {
                   }}
                 >
                   {appBarPages.map((page, index) => (
-                    <Link underline="none" key={page} component={RouterLink} to={setting_links[index]}>
+                    <Link underline="none" key={page} component={RouterLink} to={appBarLinks[index]}>
                       <MenuItem key={page} onClick={handleCloseNavMenu}>
                         <Typography textAlign="center" sx={{ color: '#D5D507' }}>{page}</Typography>
                       </MenuItem>

@@ -3,8 +3,8 @@ import HomePageOptions from "../../components/AccountHomePageComponents/AccountH
 export default function YourAccountPage() {
 
     return (
-    <>
-    <HomePageOptions />
-    </>
-    )
+        <>
+            <HomePageOptions />
+        </>
+    );
 }

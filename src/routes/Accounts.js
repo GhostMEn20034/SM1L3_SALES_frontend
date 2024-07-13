@@ -6,6 +6,8 @@ import YourAccountPage from "../pages/Account/YourAccountPage";
 import PersonalInfoPage from "../pages/Account/PersonalInfoPage";
 import ChangePersonalInfoPage from "../pages/Account/ChangePersonalInfoPage";
 import HistoryPage from "../pages/Account/HistoryPage";
+import OrderListPage from "../pages/Order/OrderListPage";
+
 export default function AccountRoutes() {
     return (
         <Routes>
@@ -29,6 +31,12 @@ export default function AccountRoutes() {
                     <HistoryPage />
                 </PrivateRoute>
             } />
+            <Route path='order-history/' element={
+                <PrivateRoute>
+                    <OrderListPage />
+                </PrivateRoute>
+            } />
+
         </Routes>
     );
 }

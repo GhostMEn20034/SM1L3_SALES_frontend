@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { Fragment } from 'react';
 import HomePageOption from './HomePageCards';
 import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
@@ -14,7 +13,7 @@ const settings = [
         settingName: "Your orders",
         settingDescription: "Track, return, cancel an order, or buy again",
         settingIcon: <InventorySharpIcon sx={{ fontSize: "100px", color: "#353582cf" }} />,
-        nextDestanation: '/orders'
+        nextDestanation: '/order-history?section=allOrders'
     },
     {
         settingName: "Personal information",

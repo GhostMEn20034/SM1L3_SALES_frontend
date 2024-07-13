@@ -18,6 +18,7 @@ import EventRoutes from './routes/Events';
 import CategoryRoutes from './routes/Categories';
 import PaymentRoutes from './routes/Payments';
 import OrderRoutes from './routes/Orders';
+import OtherRoutes from './routes/Other';
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
             <Route path='/categories/*' element={<CategoryRoutes />} />
             <Route path='/payments/*' element={<PaymentRoutes />} />
             <Route path='/orders/*' element={<OrderRoutes />} />
+            <Route path='/op/*' element={<OtherRoutes />} />
             <Route path='/*' element={
               <ProductRoutes />
             } />
