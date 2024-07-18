@@ -1,11 +1,19 @@
-import { Box, List, ListItem } from "@mui/material";
+import { Box, Link, List, ListItem, Typography } from "@mui/material";
 
 import OrderTopBar from "./OrderTopBar";
 import OrderItem from "./OrderItem";
-import OrderStatusInfo from "./OrderStatusInfo";
+import getOrderStatusInfo from "../../../utils/order/orderStatusInfo";
 
 
-function SingleOrder({ order }) {
+function SingleOrder({ order, openArchiveOrderDialog }) {
+    const { statusText, statusDate } = getOrderStatusInfo({
+        orderStatus: order.status,
+        shippedAt: order.shipped_at,
+        cancelledAt: order.cancelled_at,
+        deliveredAt: order.delivered_at,
+        returnedAt: order.returned_at,
+    });
+
     return (
         <Box>
             <Box
@@ -29,39 +37,53 @@ function SingleOrder({ order }) {
                     paddingY: 2,
                     borderLeft: "solid 0.25px",
                     borderRight: "solid 0.25px",
-                    borderBottom: "solid 0.25px",
-                    borderRadius: "0 0 12px 12px",
+                    borderRadius: "0px",
                 }}
             >
                 {!["pending", "processed"].includes(order.status) && (
                     <Box sx={{ mb: 1, ml: 1 }}>
-                        <OrderStatusInfo
-                            orderStatus={order.status}
-                            shippedAt={order.shipped_at}
-                            cancelledAt={order.cancelled_at}
-                            delivered_at={order.delivered_at}
-                        />
+                        <Typography variant="body1">
+                            <b>{statusText} {statusDate.format("LL")}</b>
+                        </Typography>
                     </Box>
                 )}
-                <List disablePadding>
-                    {order.order_items.map((orderItem, index) => (
-                        <ListItem disableGutters key={index}>
-                            <OrderItem orderItem={orderItem} />
-                        </ListItem>
-                    ))}
-                </List>
+                <Box>
+                    <List disablePadding>
+                        {order.order_items.map((orderItem, index) => (
+                            <ListItem disableGutters key={index}>
+                                <OrderItem orderItem={orderItem} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
+            </Box>
+            <Box 
+                sx={{
+                    padding: 1,
+                    border: "solid 0.25px",
+                    borderRadius: "0px 0px 12px 12px",
+                }}
+            >
+                <Link component='button' underline="hover" onClick={() => openArchiveOrderDialog(order)}>
+                    <Typography variant="body1">
+                        {order.archived ? 'Unarchive' : 'Archive'} order
+                    </Typography>
+                </Link>
             </Box>
         </Box>
     );
 }
 
 
-export default function OrderList({ orders }) {
+export default function OrderList({ orders, openArchiveOrderDialog }) {
     return (
         <Box>
             {orders.map((order, index) => (
                 <Box key={index} mb={2}>
-                    <SingleOrder order={order} />
+                    <SingleOrder 
+                        order={order} 
+                        openArchiveOrderDialog={openArchiveOrderDialog} 
+                    />
                 </Box>
             ))}
         </Box>

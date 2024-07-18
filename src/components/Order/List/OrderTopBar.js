@@ -86,7 +86,7 @@ export default function OrderTopBar({ orderId, createdAt, totalAmount, addressOn
                     </Box>
                 </HtmlTooltip>
                 <Box>
-                    <Link component={RouterLink} underline="hover">
+                    <Link component={RouterLink} underline="hover" to={`${orderId}`}>
                         <Typography variant="body2">
                             View Order Details
                         </Typography>

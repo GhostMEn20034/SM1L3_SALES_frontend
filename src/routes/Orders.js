@@ -10,6 +10,7 @@ export default function OrderRoutes() {
             <Route path='checkout' element={
                 <CheckoutPage />
             } />
+            
         </Routes>
     );
 }

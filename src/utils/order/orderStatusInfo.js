@@ -1,7 +1,6 @@
-import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 
-export default function OrderStatusInfo ({ orderStatus, shippedAt, cancelledAt, deliveredAt }) {
+export default function getOrderStatusInfo({ orderStatus, shippedAt, cancelledAt, deliveredAt, returnedAt}) {
 
     const getText = () => {
         switch (orderStatus) {
@@ -11,6 +10,8 @@ export default function OrderStatusInfo ({ orderStatus, shippedAt, cancelledAt, 
                 return "Delivered at";
             case "cancelled":
                 return "Cancelled at";
+            case "returned":
+                return "Returned at";
             default:
                 return null;
         }
@@ -24,16 +25,15 @@ export default function OrderStatusInfo ({ orderStatus, shippedAt, cancelledAt, 
                 return dayjs(deliveredAt);
             case "cancelled":
                 return dayjs(cancelledAt);
+            case "returned":
+                return dayjs(returnedAt);
             default:
                 return dayjs();
         }
     };
 
-    return (
-        <Box>
-            <Typography variant="body1">
-                <b>{getText()} {getDate().format("LL")}</b>
-            </Typography>
-        </Box>
-    );
+    return {
+        statusText: getText(),
+        statusDate: getDate(),
+    };
 }

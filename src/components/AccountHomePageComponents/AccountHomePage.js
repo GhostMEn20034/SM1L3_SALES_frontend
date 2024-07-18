@@ -5,7 +5,7 @@ import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import MapsHomeWorkRoundedIcon from '@mui/icons-material/MapsHomeWorkRounded';
 import RestoreOutlinedIcon from '@mui/icons-material/RestoreOutlined';
-import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
+import ArchiveRounded from '@mui/icons-material/ArchiveRounded';
 import { Typography } from '@mui/material';
 
 const settings = [
@@ -34,12 +34,11 @@ const settings = [
         nextDestanation: '/recently-viewed-items'
     },
     {
-        settingName: "Payments",
-        settingDescription: "View all transactions",
-        settingIcon: <PaymentRoundedIcon sx={{ fontSize: "100px", color: "#353582cf" }} />,
-        nextDestanation: '/payments'
+        settingName: "Your archived orders",
+        settingDescription: "See all your archived orders",
+        settingIcon: <ArchiveRounded sx={{ fontSize: "100px", color: "#353582cf" }} />,
+        nextDestanation: '/archived-orders/'
     },
-
 ]
 
 export default function HomePageOptions() {

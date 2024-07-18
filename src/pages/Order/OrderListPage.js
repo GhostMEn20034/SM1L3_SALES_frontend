@@ -1,6 +1,6 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, Link } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams, Link as RouterLink } from "react-router-dom";
 
 import Sections from "../../components/CommonComponents/Tabs/Sections";
 import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
@@ -17,10 +17,14 @@ import { transformOrderListFilters } from "../../utils/order/orderListFilters";
 import { changeQueryParams } from "../../utils/urlParams/changeUrlParams";
 
 import useAxios from "../../utils/useAxios";
+import ArchiveOrderDialog from "../../components/Order/Dialogs/ArchiveOrderDialog";
+import OrderArchivalAlerts from "../../components/Order/List/OrderArchivalAlerts";
 
 
 export default function OrderListPage() {
     const location = useLocation();
+    const navigate = useNavigate();
+
     const [searchParams, setSearchParams] = useSearchParams();
 
     let section = searchParams.get("section");
@@ -35,14 +39,20 @@ export default function OrderListPage() {
     const breadCrumbData = getOrderListBreadCrumbData();
 
     const [tabNumber, setTabNumber] = useState(getTabNumberBySectionName(section));
-    const [ordersLoading, setOrdersLoading] = useState(false);
+
     const [orderFilters, setOrderFilters] = useState(null);
     const [orders, setOrders] = useState(null);
     const [orderCount, setOrderCount] = useState(0);
+
+    const [orderToArchive, setOrderToArchive] = useState(null);
+    const [orderArchivingLoading, setOrderArchivingLoading] = useState(false);
+
     const [totalPages, setTotalPages] = useState(1);
 
+    const [successOrderArchival, setSuccessOrderArchival] = useState(false);
+    const [failedOrderArchivalMsg, setFailedOrderArchivalMsg] = useState(null);
 
-    const navigate = useNavigate();
+
     const tabNumberToCallBackMapping = getTabNumberToCallbackMapping(navigate);
     const ordersApi = useAxios('orders');
 
@@ -61,14 +71,13 @@ export default function OrderListPage() {
         try {
             let response = await ordersApi.get('/api/v1/orders/filters/', { params });
             let data = await response.data;
-            setOrderFilters(transformOrderListFilters(data?.filters));
+            setOrderFilters(data?.filters);
         } catch (e) {
             console.log("Something went wrong");
         }
     };
 
     const getOrdersList = async () => {
-        setOrdersLoading(true);
         let params = {
             order_status: orderStatus,
             time_filter: timeFilter,
@@ -87,6 +96,27 @@ export default function OrderListPage() {
         }
     };
 
+    const archiveOrder = async (orderUuid) => {
+        setOrderArchivingLoading(true);
+
+        try {
+            await ordersApi.put(`/api/v1/orders/${orderUuid}/archive/`, { purpose: 'archive' });
+            setOrders((prevValues) => prevValues.filter((prevValue) => prevValue.order_uuid !== orderUuid));
+            setOrderCount((prevValue) => prevValue - 1);
+            setSuccessOrderArchival(true);
+            setOrderToArchive(null);
+        } catch (e) {
+            console.log(e.response.data);
+            setFailedOrderArchivalMsg(e.response.data.detail);
+        }
+
+        setOrderArchivingLoading(false);
+    };
+
+    const openArchiveOrderDialog = (order) => {
+        setOrderToArchive(order);
+    };
+
     const sections = [
         { "name": "Orders", "value": 0 },
         { "name": "Not yet shipped", "value": 1 },
@@ -95,21 +125,46 @@ export default function OrderListPage() {
     ];
 
     useEffect(() => {
+        if (timeFilter === 'archived') {
+            navigate('/your-account/archived-orders/');
+        } else {
+            getOrdersList();   
+        }
+    }, [section, timeFilter, page]);
+
+
+    useEffect(() => {
         getOrderFilters();
     }, [section]);
 
-    useEffect(() => {
-        getOrdersList();
-    }, [section, timeFilter, page]);
-
     return (
         <Container maxWidth="lg" sx={{ py: 2 }}>
+            {orderToArchive && (
+                <ArchiveOrderDialog
+                    order={orderToArchive}
+                    open={Boolean(orderToArchive)}
+                    handleClose={() => setOrderToArchive(null)}
+                    onSubmit={archiveOrder}
+                    failedOrderArchivalMsg={failedOrderArchivalMsg}
+                    setFailedOrderArchivalMsg={setFailedOrderArchivalMsg}
+                    orderArchivingLoading={orderArchivingLoading}
+                />
+            )}
+
             <Box display="flex" justifyContent="center">
                 <Box sx={{ width: "100%" }}>
                     <Box sx={{ mb: 1 }}>
                         <BreadCrumb breadCrumbData={breadCrumbData} />
                     </Box>
-                    <Typography sx={{ mb: 1 }} variant="h4">Your Orders</Typography>
+                    <Box sx={{ my: 3 }}>
+                        <OrderArchivalAlerts
+                            successOrderArchival={successOrderArchival}
+                            setSuccessOrderArchival={setSuccessOrderArchival}
+                        />
+                    </Box>
+                    <Box>
+                        <Typography sx={{ mb: 1 }} variant="h4">Your Orders</Typography>
+                    </Box>
                 </Box>
             </Box>
             <Box>
@@ -127,19 +182,27 @@ export default function OrderListPage() {
                         <FiltersForm
                             timeFilter={timeFilter}
                             setTimeFilter={changeTimeFilter}
-                            timeFilters={orderFilters}
+                            timeFilters={transformOrderListFilters(orderFilters)}
                             orderCount={orderCount}
                         />
                     </Box>
                 </Box>
             )}
-            {orders && (
+            {orders?.length > 0 ? (
                 <Box sx={{ mt: 2, }}>
-                    <OrderList orders={orders} />
+                    <OrderList orders={orders} openArchiveOrderDialog={openArchiveOrderDialog} />
+                </Box>
+            ) : (
+                <Box sx={{ mt: 5 }} display="flex" justifyContent="center">
+                    <Typography variant='body1'>
+                        There are no orders 
+                        {orderFilters?.[timeFilter] ? ` in ${orderFilters[timeFilter].toLowerCase()}` : ''}. 
+                        See <Link component={RouterLink} to={'/your-account/archived-orders/'}>Your Archived Orders</Link>.
+                    </Typography>
                 </Box>
             )}
             {totalPages > 1 && (
-                <Box display="flex" alignItems="center" justifyContent="center" sx={{mt: 4}}>
+                <Box display="flex" alignItems="center" justifyContent="center" sx={{ mt: 4 }}>
                     <CustomPagination
                         count={totalPages}
                         page={page}
