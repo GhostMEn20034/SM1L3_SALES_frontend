@@ -34,5 +34,5 @@ export default function ProductList(props) {
                 </Box>
             ))}
         </Box>
-    )
+    );
 }

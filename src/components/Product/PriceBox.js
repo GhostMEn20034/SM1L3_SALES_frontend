@@ -1,4 +1,4 @@
-import { currencySymbol } from "../../../../utils/consts";
+import { currencySymbol } from "../../utils/consts";
 import { Box, Typography } from "@mui/material";
 
 export default function PriceBox(props) {
@@ -7,7 +7,7 @@ export default function PriceBox(props) {
             <Typography variant="h6" fontWeight={"lighter"}>
                 {currencySymbol}{props.discounted_price.toFixed(2)}
             </Typography>
-            {props.discount_percentage && (
+            {props.discount_percentage > 0 && (
                 <Box display="flex" alignItems="center">
                     <Typography variant="body2" sx={{mr: 0.5}}>
                         {`Original Price: `}

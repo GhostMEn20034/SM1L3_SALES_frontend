@@ -132,7 +132,6 @@ export default function OrderListPage() {
         }
     }, [section, timeFilter, page]);
 
-
     useEffect(() => {
         getOrderFilters();
     }, [section]);
