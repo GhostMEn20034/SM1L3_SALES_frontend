@@ -1,6 +1,6 @@
 import { Box, Container, Typography, Link } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams, Link as RouterLink } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useLocation, useNavigate, useSearchParams, createSearchParams, Link as RouterLink } from "react-router-dom";
 
 import Sections from "../../components/CommonComponents/Tabs/Sections";
 import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
@@ -16,12 +16,15 @@ import {
 import { transformOrderListFilters } from "../../utils/order/orderListFilters";
 import { changeQueryParams } from "../../utils/urlParams/changeUrlParams";
 
+import UserContext from "../../context/UserContext";
 import useAxios from "../../utils/useAxios";
 import ArchiveOrderDialog from "../../components/Order/Dialogs/ArchiveOrderDialog";
 import OrderArchivalAlerts from "../../components/Order/List/OrderArchivalAlerts";
+import FailedPurchasing from "../../components/Order/List/FailedPurchasing";
 
 
 export default function OrderListPage() {
+    const { userInfo, refreshCartData } = useContext(UserContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -49,12 +52,14 @@ export default function OrderListPage() {
 
     const [totalPages, setTotalPages] = useState(1);
 
+    const [buyNowFailure, setBuyNowFailure] = useState(false);
     const [successOrderArchival, setSuccessOrderArchival] = useState(false);
     const [failedOrderArchivalMsg, setFailedOrderArchivalMsg] = useState(null);
 
 
     const tabNumberToCallBackMapping = getTabNumberToCallbackMapping(navigate);
     const ordersApi = useAxios('orders');
+    const usersApi = useAxios('users');
 
     const changeTimeFilter = (newValue) => {
         let newSearchParams = changeQueryParams(searchParams, {
@@ -106,7 +111,6 @@ export default function OrderListPage() {
             setSuccessOrderArchival(true);
             setOrderToArchive(null);
         } catch (e) {
-            console.log(e.response.data);
             setFailedOrderArchivalMsg(e.response.data.detail);
         }
 
@@ -115,6 +119,25 @@ export default function OrderListPage() {
 
     const openArchiveOrderDialog = (order) => {
         setOrderToArchive(order);
+    };
+
+    const buyNow = async (productId) => {
+        try {
+            await usersApi.post(`/api/carts/${userInfo?.cart?.cart_uuid}/items/`, {
+                product_id: productId,
+                quantity: 1,
+            });
+            refreshCartData();
+            navigate({
+                pathname: "/orders/checkout",
+                search: createSearchParams({
+                    'productIds': productId,
+                }).toString(),
+            });
+        } catch (err) {
+            console.log(err.response);
+            setBuyNowFailure(true);
+        }
     };
 
     const sections = [
@@ -149,7 +172,10 @@ export default function OrderListPage() {
                     orderArchivingLoading={orderArchivingLoading}
                 />
             )}
-
+            <FailedPurchasing 
+                open={buyNowFailure}
+                setOpen={setBuyNowFailure}
+            />
             <Box display="flex" justifyContent="center">
                 <Box sx={{ width: "100%" }}>
                     <Box sx={{ mb: 1 }}>
@@ -189,7 +215,11 @@ export default function OrderListPage() {
             )}
             {orders?.length > 0 ? (
                 <Box sx={{ mt: 2, }}>
-                    <OrderList orders={orders} openArchiveOrderDialog={openArchiveOrderDialog} />
+                    <OrderList 
+                        orders={orders} 
+                        openArchiveOrderDialog={openArchiveOrderDialog} 
+                        buyNow={buyNow} 
+                    />
                 </Box>
             ) : (
                 <Box sx={{ mt: 5 }} display="flex" justifyContent="center">

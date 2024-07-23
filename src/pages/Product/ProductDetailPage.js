@@ -1,5 +1,5 @@
 import { memo, useEffect, useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import {
     Box,
     Container, useTheme,
@@ -84,17 +84,31 @@ export default function ProductDetailPage() {
                 quantity: inCartProductQuantity,
             });
             refreshCartData();
-            navigate(
-                "/cart",
-                {
-                    state: {
-                        alertMessage: { severity: "success", message: `${inCartProductQuantity} x ${productData?.name} Was added to Cart` },
-                    },
-                },
-            );
         } catch (err) {
             console.log(err.response);
         }
+    };
+
+    const addToCartWithCartNavigation = async () => {
+        await addProductToCart();
+        navigate(
+            "/cart",
+            {
+                state: {
+                    alertMessage: { severity: "success", message: `${inCartProductQuantity} x ${productData?.name} Was added to Cart` },
+                },
+            },
+        );
+    };
+
+    const buyNow = async () => {
+        await addProductToCart();
+        navigate({
+            pathname: "/orders/checkout",
+            search: createSearchParams({
+                'productIds': id,
+            }).toString(),
+        });
     };
 
     const changeProductOption = (valuesToUpdate) => {
@@ -130,7 +144,7 @@ export default function ProductDetailPage() {
         setLoadingNewProduct(false);
         if (userInfo?.user && successRetrieval) {
             try {
-                await usersApi.post('/api/history/', {"product": id});
+                await usersApi.post('/api/history/', { "product": id });
             } catch (e) {
                 console.log("Something Went Wrong");
             }
@@ -212,7 +226,8 @@ export default function ProductDetailPage() {
                                     setInCartProductQuantity={setInCartProductQuantity}
                                     isMobile={isMobile}
                                     isTablet={isTablet}
-                                    addProductToCart={addProductToCart}
+                                    addProductToCart={addToCartWithCartNavigation}
+                                    buyNow={buyNow}
                                 />
                             </Container>
                         </Box>

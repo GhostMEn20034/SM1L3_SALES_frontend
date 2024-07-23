@@ -41,7 +41,7 @@ export default function SuccessPaymentPage() {
             setOrderSummaryValues([orderId, dayjs(orderDate).format("LL"), "Within 4-7 business days", token]);
             setSuccess(true);
         } catch (e) {
-            setErrorMsg("Unable to confirm payment");
+            setErrorMsg("Error. Unable to confirm payment");
             console.log(e.response.data);
         }
 
@@ -57,11 +57,12 @@ export default function SuccessPaymentPage() {
             let token = searchParams.get("token");
             capturePaypalPayment(token);
         } else {
-            setErrorMsg("Unable to confirm payment");
+            setErrorMsg("Error. Unable to confirm payment");
         };
         setSuccess(true)
     }, [userInfo]);
 
+    console.log(errorMsg);
 
     if (captureLoading) {
         return (
@@ -73,6 +74,25 @@ export default function SuccessPaymentPage() {
             }}>
                 <CircularProgress />
             </Box>
+        );
+    }
+
+    if (errorMsg) {
+        return (
+            <Container maxWidth="xl" sx={{ py: 2 }}>
+                <Alert severity="error" sx={{ alignItems: "center" }}>
+                    <Box>{errorMsg}</Box>
+                    <Box display="flex" alignItems="center">
+                        <Link
+                            component={RouterLink}
+                            underline="hover"
+                            to="/"
+                        >
+                            Go to main page
+                        </Link>
+                    </Box>
+                </Alert>
+            </Container>
         );
     }
 
@@ -99,36 +119,38 @@ export default function SuccessPaymentPage() {
                                     Here's a quick summary of your order:
                                 </Typography>
                             </Box>
-                            <Box>
-                                <List dense>
-                                    {orderSummaryTitles.map((item, index) => (
-                                        <ListItem key={index} sx={{ display: "flex" }}>
-                                            <Typography variant="body2">
-                                                {item}: {orderSummaryValues[index]}
-                                            </Typography>
-                                        </ListItem>
-                                    ))}
-                                    <ListItem>
-                                        <Box display="flex" alignItems="center" >
-                                            <Box sx={{ mr: 0.5 }}>
+                            {orderSummaryTitles?.length > 0 && orderSummaryValues?.length > 0 && (
+                                <Box>
+                                    <List dense>
+                                        {orderSummaryTitles.map((item, index) => (
+                                            <ListItem key={index} sx={{ display: "flex" }}>
                                                 <Typography variant="body2">
-                                                    Payment Method:
+                                                    {item}: {orderSummaryValues[index]}
                                                 </Typography>
+                                            </ListItem>
+                                        ))}
+                                        <ListItem>
+                                            <Box display="flex" alignItems="center" >
+                                                <Box sx={{ mr: 0.5 }}>
+                                                    <Typography variant="body2">
+                                                        Payment Method:
+                                                    </Typography>
+                                                </Box>
+                                                <Box display="flex" alignItems="center">
+                                                    <PaymentMethodToIconMapping paymentMethod={paymentMethod} iconProps={{ width: "90%" }} />
+                                                </Box>
                                             </Box>
-                                            <Box display="flex" alignItems="center">
-                                                <PaymentMethodToIconMapping paymentMethod={paymentMethod} iconProps={{ width: "90%" }} />
-                                            </Box>
-                                        </Box>
-                                    </ListItem>
-                                </List>
-                            </Box>
+                                        </ListItem>
+                                    </List>
+                                </Box>
+                            )}
                         </Box>
                         <Box sx={{ mt: 2 }} display="flex" alignItems="center">
                             <Box display="flex" alignItems="center">
                                 <Link
                                     component={RouterLink}
                                     underline="hover"
-                                    to="/"
+                                    to={`/your-account/order-history/${orderId}`}
                                 >
                                     Review or edit your order
                                 </Link>
@@ -150,11 +172,6 @@ export default function SuccessPaymentPage() {
                         </Box>
                     </Alert>
                 </Box>
-            )}
-            {errorMsg && (
-                <Alert severity="error">
-                    {errorMsg}
-                </Alert>
             )}
         </Container>
     );

@@ -1,14 +1,28 @@
+import { useState } from 'react';
+
 import { Box, Button, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
 
-export default function OrderItemActionRow({ itemId }) {
+export default function OrderItemActionRow({ itemId, stock, forSale, buyNow}) {
+    const [buyNowLoading, setBuyNowLoading] = useState(false);
+
+    let canBeBought = stock > 0 && forSale; // Can the product be bought
+
     return (
         <Box
             display="flex"
             flexWrap="wrap"
             sx={{ gap: 1.5 }} // gap between buttons
         >
-            <Button
+            <LoadingButton
+                loading={buyNowLoading}
+                onClick={() => {
+                    setBuyNowLoading(true);
+                    buyNow();
+                    setBuyNowLoading(false);   
+                }}
+                disabled={!canBeBought}
                 variant="contained"
                 size="small"
                 sx={{
@@ -22,7 +36,7 @@ export default function OrderItemActionRow({ itemId }) {
                 }}
             >
                 Buy it Again
-            </Button>
+            </LoadingButton>
             <Link component={RouterLink} underline='none' to={`/item/${itemId}`}>
                 <Button
                     size="small"

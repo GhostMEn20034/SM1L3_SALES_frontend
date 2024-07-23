@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 import OrderItemActionRow from "./OrderItemActionRow";
 
 
-export default function OrderItem({ orderItem, showActionRow = true }) {
+export default function OrderItem({ orderItem, buyNow, showActionRow = true }) {
     return (
         <Box display="flex">
             <Box>
@@ -43,7 +43,12 @@ export default function OrderItem({ orderItem, showActionRow = true }) {
                 </Box>
                 {showActionRow && (
                     <Box sx={{ mt: "auto" }}>
-                        <OrderItemActionRow itemId={orderItem.product.object_id} />
+                        <OrderItemActionRow 
+                            itemId={orderItem.product.object_id}
+                            stock={orderItem.product.stock}
+                            forSale={orderItem.product.for_sale}
+                            buyNow={() => buyNow(orderItem.product.object_id)}
+                        />
                     </Box>
                 )}
             </Box>

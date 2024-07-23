@@ -48,7 +48,7 @@ export default function BuyAgainPage() {
 
         let params = {
             page,
-            page_size: 8,
+            page_size: 16,
         };
         try {
             let response = await ordersApi.get('/api/v1/recommendations/bought-products/', { params })

@@ -25,6 +25,7 @@ export default function SummaryPanel(props) {
         isMobile,
         isTablet,
         addProductToCart,
+        buyNow
     } = props;
 
     let allowedToAddToCart = () => {
@@ -94,8 +95,13 @@ export default function SummaryPanel(props) {
                 />
             </Box>
             <Box sx={{ mt: 1 }}>
-                <BuyBox allowedToAddToCart={allowedToAddToCart()} buttonSize={"large"} addProductToCart={addProductToCart} />
+                <BuyBox 
+                    allowedToAddToCart={allowedToAddToCart()} 
+                    buttonSize={"large"} 
+                    addProductToCart={addProductToCart} 
+                    buyNow={buyNow}    
+                />
             </Box>
         </Box>
-    )
+    );
 }

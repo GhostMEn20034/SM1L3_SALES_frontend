@@ -5,7 +5,7 @@ import OrderItem from "./OrderItem";
 import getOrderStatusInfo from "../../../utils/order/orderStatusInfo";
 
 
-function SingleOrder({ order, openArchiveOrderDialog }) {
+function SingleOrder({ order, openArchiveOrderDialog, buyNow }) {
     const { statusText, statusDate } = getOrderStatusInfo({
         orderStatus: order.status,
         shippedAt: order.shipped_at,
@@ -51,7 +51,10 @@ function SingleOrder({ order, openArchiveOrderDialog }) {
                     <List disablePadding>
                         {order.order_items.map((orderItem, index) => (
                             <ListItem disableGutters key={index}>
-                                <OrderItem orderItem={orderItem} />
+                                <OrderItem 
+                                    orderItem={orderItem}
+                                    buyNow={buyNow} 
+                                />
                             </ListItem>
                         ))}
                     </List>
@@ -75,14 +78,15 @@ function SingleOrder({ order, openArchiveOrderDialog }) {
 }
 
 
-export default function OrderList({ orders, openArchiveOrderDialog }) {
+export default function OrderList({ orders, openArchiveOrderDialog, buyNow }) {
     return (
         <Box>
             {orders.map((order, index) => (
                 <Box key={index} mb={2}>
                     <SingleOrder 
                         order={order} 
-                        openArchiveOrderDialog={openArchiveOrderDialog} 
+                        openArchiveOrderDialog={openArchiveOrderDialog}
+                        buyNow={buyNow}
                     />
                 </Box>
             ))}

@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 
@@ -7,9 +7,11 @@ export default function BuyBox(props) {
         allowedToAddToCart,
         buttonSize = 'small',
         addProductToCart,
+        buyNow,
     } = props;
 
     const [addToCartLoading, setAddToCartLoading] = useState(false);
+    const [buyNowLoading, setBuyNowLoading] = useState(false);
 
 
     return (
@@ -52,6 +54,12 @@ export default function BuyBox(props) {
                 }}
             >
                 <LoadingButton
+                    loading={buyNowLoading}
+                    onClick={() => {
+                        setBuyNowLoading(true);
+                        buyNow();
+                        setBuyNowLoading(false);
+                    }}
                     variant="contained"
                     size={buttonSize}
                     fullWidth

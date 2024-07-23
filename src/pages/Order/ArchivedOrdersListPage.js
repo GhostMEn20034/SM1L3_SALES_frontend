@@ -1,10 +1,15 @@
 import { Box, Container, Link, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useSearchParams, Link as RouterLink } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import {
+    useSearchParams, Link as RouterLink,
+    useNavigate, createSearchParams
+} from "react-router-dom";
 
 import BreadCrumb from "../../components/CommonComponents/Navigation/BreadCrumb";
 import OrderList from "../../components/Order/List/OrderList";
+import UserContext from "../../context/UserContext";
 import CustomPagination from "../../components/CommonComponents/Navigation/Pagination";
+import FailedPurchasing from "../../components/Order/List/FailedPurchasing";
 import { getArchivedOrderListBreadCrumbData } from "../../utils/order/breadCrumbUtils";
 import { changeQueryParams } from "../../utils/urlParams/changeUrlParams";
 
@@ -14,7 +19,10 @@ import UnarchiveOrderDialog from "../../components/Order/Dialogs/UnarchiveOrderD
 
 
 export default function ArchivedOrdersListPage() {
+    const { userInfo, refreshCartData } = useContext(UserContext);
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const navigate = useNavigate();
 
     let page = Number(searchParams.get("page")) || 1;
 
@@ -28,10 +36,12 @@ export default function ArchivedOrdersListPage() {
     const [orderToUnarchive, setOrderToUnarchive] = useState(null);
     const [orderUnarchivingLoading, setOrderUnarchivingLoading] = useState(false);
 
-    const [successOrderUnarchival ,setSuccessOrderUnarchival] = useState(false);
+    const [buyNowFailure, setBuyNowFailure] = useState(false);
+    const [successOrderUnarchival, setSuccessOrderUnarchival] = useState(false);
     const [failedOrderUnarchivalMsg, setFailedOrderUnarchivalMsg] = useState(null);
 
     const ordersApi = useAxios('orders');
+    const usersApi = useAxios('users');
 
     const getOrdersList = async () => {
         let params = {
@@ -73,9 +83,28 @@ export default function ArchivedOrdersListPage() {
         setOrderToUnarchive(order);
     };
 
+    const buyNow = async (productId) => {
+        try {
+            await usersApi.post(`/api/carts/${userInfo?.cart?.cart_uuid}/items/`, {
+                product_id: productId,
+                quantity: 1,
+            });
+            refreshCartData();
+            navigate({
+                pathname: "/orders/checkout",
+                search: createSearchParams({
+                    'productIds': productId,
+                }).toString(),
+            });
+        } catch (err) {
+            console.log(err.response);
+            setBuyNowFailure(true);
+        }
+    };
+
     useEffect(() => {
         getOrdersList();
-    }, [page, ]);
+    }, [page,]);
 
 
 
@@ -92,6 +121,10 @@ export default function ArchivedOrdersListPage() {
                     orderUnarchivingLoading={orderUnarchivingLoading}
                 />
             )}
+            <FailedPurchasing 
+                open={buyNowFailure}
+                setOpen={setBuyNowFailure}
+            />
             <Box display="flex" justifyContent="center">
                 <Box sx={{ width: "100%" }}>
                     <Box sx={{ mb: 1 }}>
@@ -110,14 +143,18 @@ export default function ArchivedOrdersListPage() {
             </Box>
             <Box>
                 <Typography variant="body1">
-                    You have <b>{orderCount} archived orders</b>. 
-                    To see your other past purchases, 
+                    You have <b>{orderCount} archived orders</b>.
+                    To see your other past purchases,
                     go to <Link component={RouterLink} to={'/your-account/order-history/'}>Your Orders</Link>.
                 </Typography>
             </Box>
             {orders?.length > 0 && (
                 <Box sx={{ mt: 2, }}>
-                    <OrderList orders={orders} openArchiveOrderDialog={openUnarchiveOrderDialog} />
+                    <OrderList
+                        orders={orders}
+                        openArchiveOrderDialog={openUnarchiveOrderDialog}
+                        buyNow={buyNow}
+                    />
                 </Box>
             )}
             {totalPages > 1 && (

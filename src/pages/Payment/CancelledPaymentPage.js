@@ -74,16 +74,11 @@ export default function CancelledPaymentPage() {
                         <Link
                             component={RouterLink}
                             underline="hover"
-                            to="/"
+                            to={`/your-account/order-history/${orderId}`}
                         >
                             Review your order
                         </Link>
                     </Box >
-                    <Box sx={{ mx: 0.5 }} display="flex" alignItems="center">
-                        <Typography variant="body1">
-                            |
-                        </Typography>
-                    </Box>
                     <Box sx={{ mx: 0.5 }} display="flex" alignItems="center">
                         <Typography variant="body1">
                             |
