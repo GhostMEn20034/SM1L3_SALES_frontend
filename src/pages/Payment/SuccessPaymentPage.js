@@ -62,8 +62,6 @@ export default function SuccessPaymentPage() {
         setSuccess(true)
     }, [userInfo]);
 
-    console.log(errorMsg);
-
     if (captureLoading) {
         return (
             <Box sx={{

@@ -5,7 +5,7 @@ export default function PaymentList({ payments }) {
     return (
         <Box>
             {payments.map((payment, index) => (
-                <Box key={index}>
+                <Box key={index} sx={{ mb: 1 }}>
                     <PaymentItem payment={payment} />
                 </Box>
             ))}

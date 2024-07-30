@@ -7,6 +7,11 @@ export default function PaymentItem({ payment }) {
         'refund': 'Refund',
     };
 
+    const paymentTypeToSignMapping = {
+        'payment': '-',
+        'refund': '+',
+    };
+
     const paymentStatusToColorMapping = {
         'pending': "info",
         'success': "success",
@@ -14,8 +19,10 @@ export default function PaymentItem({ payment }) {
         'failed': "error",
     };
 
+    const amountSign = paymentTypeToSignMapping[payment.type];
+
     return (
-        <Box display="flex" alignItems="center" justifyContent="space-between" boxShadow={3} padding={1} borderRadius="12px">
+        <Box display="flex" alignItems="center" justifyContent="space-between" boxShadow={2} padding={1} borderRadius="12px">
 
             <Box>
                 <Typography variant="body1">
@@ -52,7 +59,7 @@ export default function PaymentItem({ payment }) {
                 </Box>
                 <Box>
                     <Typography variant="body1">
-                        <b>{payment.gross_amount + " " + payment.currency}</b>
+                        <b>{`${amountSign} ${payment.gross_amount} ${payment.currency}`}</b>
                     </Typography>
                 </Box>
             </Box>

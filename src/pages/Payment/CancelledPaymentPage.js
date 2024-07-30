@@ -8,6 +8,7 @@ import useAxios from "../../utils/useAxios";
 export default function CancelledPaymentPage() {
     const [searchParams] = useSearchParams();
     const [cancelingLoading, setCancelingLoading] = useState(false);
+    const [orderAlreadyCanceled, setOrderAlreadyCanceled] = useState(false);
 
     let orderId = searchParams.get("orderId");
 
@@ -19,7 +20,9 @@ export default function CancelledPaymentPage() {
         try {
             await ordersApi.post(`/api/v1/orders/${orderId}/cancel/`);
         } catch (e) {
-            console.log("Something went wrong");
+            if (e.response.status === 400) {
+                setOrderAlreadyCanceled(true);
+            }
         }
 
         setCancelingLoading(false);
@@ -48,7 +51,10 @@ export default function CancelledPaymentPage() {
             <Alert icon={false} severity="warning">
                 <Box>
                     <Typography variant="h6">
-                        <b>Your order is canceled</b>
+                        <b>{orderAlreadyCanceled ? 
+                            `Your order is already canceled`: 
+                            `Your order is canceled`
+                        }</b>
                     </Typography>
                 </Box>
                 <Box sx={{ mt: 0.5 }}>
@@ -56,19 +62,23 @@ export default function CancelledPaymentPage() {
                         Order number: <b>{orderId}</b>
                     </Typography>
                 </Box>
-                <Box sx={{ mt: 0.5 }}>
-                    <Typography variant="body1">
-                        Thank you for your interest in our products. <br />
-                        We understand that circumstances can change,
-                        and we apologize for any inconvenience caused.
-                    </Typography>
-                </Box>
-                <Box sx={{ mt: 0.5 }}>
-                    <Typography variant="body1">
-                        We've received confirmation that your order has been <b>canceled</b>. <br />
-                        Your order <b>will not be processed</b> further.
-                    </Typography>
-                </Box>
+                {!orderAlreadyCanceled && (
+                    <Box>
+                        <Box sx={{ mt: 0.5 }}>
+                            <Typography variant="body1">
+                                Thank you for your interest in our products. <br />
+                                We understand that circumstances can change,
+                                and we apologize for any inconvenience caused.
+                            </Typography>
+                        </Box>
+                        <Box sx={{ mt: 0.5 }}>
+                            <Typography variant="body1">
+                                We've received confirmation that your order has been <b>canceled</b>. <br />
+                                Your order <b>will not be processed</b> further.
+                            </Typography>
+                        </Box>
+                    </Box>
+                )}
                 <Box sx={{ mt: 2 }} display="flex" alignItems="center">
                     <Box display="flex" alignItems="center">
                         <Link
