@@ -142,6 +142,11 @@ export default function CartItemListPage() {
                                 <Alert
                                     severity={alertMessage.severity}
                                     onClose={() => setAlertMessage(null)}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
                                 >
                                     {alertMessage.message}
                                 </Alert>

@@ -17,9 +17,14 @@ import OrderDetailsActionRaw from "../../components/Order/Details/ActionRaw";
 export default function OrderDetailsPage() {
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState(null);
+    // Order cancelling messages
     const [cancelOrderErrorMessage, setCancelOrderErrorMessage] = useState(null);
     const [cancelOrderSuccessMessage, setCancelOrderSuccessMessage] = useState(null);
+    // Money Refund messages
+    const [refundErrorMessage, setRefundErrorMessage] = useState(null);
+    const [refundSuccessMessage, setRefundSuccessMessage] = useState(null);
 
+    const [reasonToReturn, setReasonToReturn] = useState(null); // The reason why the user wants to return order items and get his money back
 
     const { id } = useParams();
     const ordersApi = useAxios('orders');
@@ -59,6 +64,31 @@ export default function OrderDetailsPage() {
         }
     };
 
+    const requestRefund = async (onSuccessCallback) => {
+        let body = {
+            reason_for_return: reasonToReturn,
+            order_id: id,
+        };
+
+        try {
+            await ordersApi.post(`/api/v1/refunds/`, body);
+            setRefundSuccessMessage(`
+                Please allow up to 3 business days for your request to be processed. 
+                The refund will be credited to the original payment method upon approval.
+                You will receive an email notification regarding the status of your refund.
+            `);
+            if (onSuccessCallback) {
+                onSuccessCallback();
+            }
+        } catch (e) {
+            if (e.response.status === 400) {
+                setRefundErrorMessage(e.response.data.detail);
+            } else {
+                setRefundErrorMessage("Something went wrong");
+            }
+        }
+    };
+
     useEffect(() => {
         getOrderById();
     }, []);
@@ -82,6 +112,13 @@ export default function OrderDetailsPage() {
                         <Box sx={{ mb: 3 }}>
                             <Alert severity="success" onClose={() => setCancelOrderSuccessMessage(null)} sx={{ alignItems: "center" }}>
                                 {cancelOrderSuccessMessage}
+                            </Alert>
+                        </Box>
+                    )}
+                    {refundSuccessMessage && (
+                        <Box sx={{ mb: 3 }}>
+                            <Alert severity="success" onClose={() => setRefundSuccessMessage(null)} sx={{ alignItems: "center" }}>
+                                {refundSuccessMessage}
                             </Alert>
                         </Box>
                     )}
@@ -130,6 +167,11 @@ export default function OrderDetailsPage() {
                                     cancelOrder={cancelOrder}
                                     cancelOrderErrorMessage={cancelOrderErrorMessage}
                                     setCancelOrderErrorMessage={setCancelOrderErrorMessage}
+                                    requestRefund={requestRefund}
+                                    reasonToReturn={reasonToReturn}
+                                    setReasonToReturn={setReasonToReturn}
+                                    refundErrorMessage={refundErrorMessage}
+                                    setRefundErrorMessage={setRefundErrorMessage}
                                 />
                             </Box>
                         </Box>

@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Link, Alert } from "@mui/material";
+import { Box, Typography, Button, Link } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { currencySymbol } from "../../utils/consts";
 
@@ -35,11 +35,6 @@ export default function ProceedToCheckout(props) {
                             <Typography>
                                 <Link component={RouterLink} underline="hover" to={`/signin?nextDestination=${location.pathname}`}>Sign in</Link> Or <Link component={RouterLink} underline="hover" to={`/signup?nextDestination=${location.pathname}`}>Sign Up</Link>
                             </Typography>
-                        </Box>
-                        <Box sx={{mt: 1}}>
-                            <Alert severity="info">
-                                If you want to move your cart items to your own account, don't use Authorization via Google
-                            </Alert>
                         </Box>
                     </Box>
 

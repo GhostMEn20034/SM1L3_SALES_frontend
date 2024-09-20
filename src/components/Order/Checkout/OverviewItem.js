@@ -41,7 +41,7 @@ export default function OverviewItem(props) {
                 <Box display="flex" justifyContent="center">
                     <OverviewItemPrice price={product?.price} discountRate={product?.discount_rate} />
                 </Box>
-                {product?.tax_percentage && (
+                {product?.tax_percentage && product?.tax_percentage > 0 &&(
                     <Box display="flex" flexDirection="column" alignItems="center">
                         <Box>
                             <Typography variant="body1">

@@ -9,6 +9,11 @@ export default function OrderDetailsActionRaw(props) {
         cancelOrder,
         cancelOrderErrorMessage, 
         setCancelOrderErrorMessage,
+        requestRefund,
+        reasonToReturn, 
+        setReasonToReturn,
+        refundErrorMessage, 
+        setRefundErrorMessage,
     } = props;
 
     const [openedDialog, setOpenedDialog] = useState(null);
@@ -60,7 +65,12 @@ export default function OrderDetailsActionRaw(props) {
                     <Box>
                         <RequestRefundDialog 
                             open={openedDialog === 'requestRefund'}
-                            handleClose={() => setOpenedDialog(null)}        
+                            handleClose={() => setOpenedDialog(null)}
+                            onSubmit={requestRefund}
+                            reasonToReturn={reasonToReturn}
+                            setReasonToReturn={setReasonToReturn}
+                            refundErrorMessage={refundErrorMessage}
+                            setRefundErrorMessage={setRefundErrorMessage}
                         />
                     </Box>
                 </Box>

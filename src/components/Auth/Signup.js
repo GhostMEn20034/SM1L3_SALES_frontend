@@ -5,8 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
@@ -14,7 +12,6 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import GoogleLogin from './GoogleLogin';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 
@@ -191,13 +188,19 @@ export default function SignUp() {
                 </Box>
                 {error && (
                     <Box sx={{ mt: 2 }}>
-                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                        <Alert 
+                            severity="error" 
+                            onClose={() => setError(null)}
+                            sx={{ 
+                                display: "flex", 
+                                justifyContent: "center", 
+                                alignItems: "center" 
+                            }}
+                        >
+                            {error}
+                        </Alert>
                     </Box>
                 )}
-                <Divider sx={{ my: 4 }}>
-                    <Chip label="OR" />
-                </Divider>
-                <GoogleLogin />
                 <Copyright sx={{ mt: 4, mb: 2 }} />
             </Container>
         </ThemeProvider>

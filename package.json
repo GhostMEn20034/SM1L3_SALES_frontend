@@ -17,6 +17,7 @@
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "firebase": "^10.13.2",
     "html-react-parser": "^5.1.10",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",

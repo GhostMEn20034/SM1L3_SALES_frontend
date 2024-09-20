@@ -10,9 +10,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import GoogleLogin from './GoogleLogin';
-import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AuthContext from '../../context/AuthContext';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
@@ -131,13 +128,19 @@ export default function SignIn() {
                 </Box>
                 {error && (
                     <Box sx={{ mt: 2 }}>
-                        <Alert severity="error" onClose={() => setError(null)}>{error}</Alert>
+                        <Alert 
+                            severity="error" 
+                            onClose={() => setError(null)}
+                            sx={{ 
+                                display: "flex", 
+                                justifyContent: "center", 
+                                alignItems: "center" 
+                            }}
+                        >
+                            {error}
+                        </Alert>
                     </Box>
                 )}
-                <Divider sx={{ my: 4 }}>
-                    <Chip label="OR" />
-                </Divider>
-                <GoogleLogin />
                 <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
         </ThemeProvider>
