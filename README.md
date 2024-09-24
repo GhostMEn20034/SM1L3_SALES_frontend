@@ -13,7 +13,7 @@ To run the app locally, enter the following command:
 ```shell
 npm start
 ```
-Go to http://localhost:3001
+Go to http://localhost:3000
 
 # Running the app in production
 To run the app in production, firstly, you need to build the app:
